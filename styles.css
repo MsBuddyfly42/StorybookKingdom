@@ -586,3 +586,22 @@ body.cinema-open { overflow:hidden; }
 .story-actor .actor-hair { top:25px;height:32px;border-radius:55% 55% 26% 20%; }
 .story-actor .actor-hair:after {top:27px;right:2px;width:17px;height:61px;}
 .story-actor.short-hair .actor-hair:after {height:20px;}
+
+/* STORYBOOK KINGDOM • jewel-tone storybook polish • 2026 */
+:root{--cream:#fff9eb;--paper:#fffdf9;--gold:#e9ac38;--gold-light:#ffe9aa;--purple:#653594;--purple-deep:#341b55;--rose:#cb537e;--green:#398567;--blue:#386ba3}
+body{background:radial-gradient(circle at 14% 14%,#ffe6aacc,transparent 32rem),radial-gradient(circle at 87% 18%,#e9c5ff99,transparent 34rem),linear-gradient(130deg,#fff7e7,#f5e6ff 48%,#e9f8ef 100%) fixed}
+.topbar{background:linear-gradient(112deg,#35184feF,#663a83F2 58%,#385b6dF2);box-shadow:0 6px 28px #40204c35}
+.hero{background-image:radial-gradient(circle at 82% 15%,#ffeac177,transparent 29%),linear-gradient(130deg,#faf0ff,#fff6dd 55%,#e0f8ed)}
+.hero h1{background:linear-gradient(110deg,#542575,#b64b86 60%,#a46b27);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .crest,.topbar .crest{filter:drop-shadow(0 4px 8px #f4d18680)}
+.pill-btn,.primary-btn,.secondary-btn,.icon-btn,.tab{transition:transform .18s ease,box-shadow .2s ease,filter .2s ease}
+.pill-btn:hover,.primary-btn:hover,.secondary-btn:hover,.icon-btn:hover,.tab:hover{transform:translateY(-3px);filter:brightness(1.07);box-shadow:0 10px 22px #713b8050}
+.view.active{animation:kingdomReveal .45s cubic-bezier(.2,.85,.25,1)}
+@keyframes kingdomReveal{from{opacity:.4;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+.sparkle-layer::before,.sparkle-layer::after{opacity:.28;color:#b16acb;animation:storybookShimmer 9s ease-in-out infinite alternate}
+@keyframes storybookShimmer{from{opacity:.12;transform:translateY(0)}to{opacity:.3;transform:translateY(8px)}}
+button:focus-visible,a:focus-visible{outline:3px solid #a14ad0;outline-offset:3px}
+@media(max-width:700px){.topbar{gap:10px}.top-actions{gap:7px}.pill-btn,.icon-btn{min-height:44px}}
+@media(prefers-reduced-motion:reduce){.view.active,.sparkle-layer::before,.sparkle-layer::after{animation:none!important}.pill-btn,.primary-btn,.secondary-btn,.icon-btn,.tab{transition:none!important}}
+
+/* END 2026 COLOR PASS */
