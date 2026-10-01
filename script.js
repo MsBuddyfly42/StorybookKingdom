@@ -1697,3 +1697,45 @@ playQuestStep=function(){
 };
 
 ensureCinemaStage();
+
+// CHARACTER CLICK FIX — the actor itself opens interactions, not only the scene hotspots.
+(function installCharacterInteractions(){
+  function talkToActor(el){
+    if(!window.cinema || !cinema.open) return;
+    const id=el.dataset.actorId;
+    if(!id) return;
+    if(id==='traveler'){
+      cinemaDialogue('Your Story','✨','What would you like to do next?',[
+        ['Meet the Queen',()=>openCinemaPerson('queen')],
+        ['Visit Tomas the baker',()=>openCinemaPerson('tomas')],
+        ['Meet Celeste the musician',()=>openCinemaPerson('celeste')],
+        ['Explore this room',()=>renderCinemaRoom(cinema.room)]
+      ]);
+    }else{
+      openCinemaPerson(id);
+    }
+  }
+  document.addEventListener('click',event=>{
+    const a=event.target.closest('.story-actor');
+    if(a) talkToActor(a);
+  });
+  document.addEventListener('keydown',event=>{
+    if(event.key!=='Enter' && event.key!==' ') return;
+    const a=event.target.closest('.story-actor');
+    if(!a)return;
+    event.preventDefault();talkToActor(a);
+  });
+  // Actor elements are regenerated whenever a scene changes, so use delegation.
+  const originalStageActors=stageActors;
+  stageActors=function(ids,poses={}){
+    originalStageActors(ids,poses);
+    const chars=document.querySelectorAll('.story-actor');
+    chars.forEach(a=>{
+      a.setAttribute('role','button');a.setAttribute('tabindex','0');
+      a.setAttribute('aria-label',a.querySelector('.actor-nameplate')?.textContent==='You'?'Choose an action':`Talk to ${a.querySelector('.actor-nameplate')?.textContent||'character'}`);
+      a.setAttribute('title',a.getAttribute('aria-label'));
+    });
+  };
+  // Make the first traveler clickable too, if already rendered.
+  document.querySelectorAll('.story-actor').forEach(a=>{a.setAttribute('role','button');a.setAttribute('tabindex','0');});
+})();

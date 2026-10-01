@@ -577,3 +577,12 @@ body.cinema-open { overflow:hidden; }
 .cinema-prop{position:absolute;z-index:3;font-size:4rem;filter:drop-shadow(0 12px 8px rgba(0,0,0,.3));opacity:0;transform:scale(.5) translateY(20px);transition:.35s ease;pointer-events:none}.cinema-prop.show{opacity:1;transform:none}.cinema-prop.center{left:50%;top:48%;transform:translate(-50%,-50%) scale(.5)}.cinema-prop.center.show{transform:translate(-50%,-50%) scale(1)}
 .cinema-world.action-mode .cinema-hotspots{opacity:.25;pointer-events:none}.cinema-world.action-mode .cinema-dialogue{transform:translateX(-50%) translateY(8px);opacity:.86}
 @media(max-width:700px){.story-actor{width:115px;height:215px;transform:scale(.78);transform-origin:50% 100%;margin:0 -14px}.cinema-characters{bottom:178px;gap:0}.cinema-action-caption{top:11%;font-size:.82rem}.story-actor .actor-nameplate{font-size:.68rem}}
+
+/* CHARACTER CLICK & HAIR FIX */
+.cinema-characters .story-actor { pointer-events:auto;cursor:pointer;touch-action:manipulation; }
+.cinema-characters .story-actor:hover { filter:drop-shadow(0 0 13px rgba(255,229,151,.9)) drop-shadow(0 18px 12px rgba(0,0,0,.3)); }
+.cinema-characters .story-actor:focus-visible { outline:3px solid #ffe69a;outline-offset:6px;border-radius:20px; }
+/* The original top hair layer covered the eyes. Keep the hair on the crown and to the side. */
+.story-actor .actor-hair { top:25px;height:32px;border-radius:55% 55% 26% 20%; }
+.story-actor .actor-hair:after {top:27px;right:2px;width:17px;height:61px;}
+.story-actor.short-hair .actor-hair:after {height:20px;}
