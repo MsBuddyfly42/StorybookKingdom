@@ -1591,3 +1591,109 @@ function cinemaStoryNode(story,nodeId){ if(nodeId==='shelf'){closeCinema();showV
 
 // initial refresh so upgraded buttons appear when those views are first opened
 cinemaUpdateStats();
+
+// === Storybook Kingdom: Animated Actor & Stage Upgrade ===
+const actorProfiles = {
+  queen:{name:'Queen Elowen',gender:'feminine',accessory:'👑',held:'🌹'},
+  prince:{name:'Prince Lucien',gender:'masculine',accessory:'',held:'🗺️'},
+  mara:{name:'Mara Bell',gender:'feminine',accessory:'',held:'🗝️'},
+  tomas:{name:'Tomas Hearth',gender:'masculine',accessory:'',held:'🥧'},
+  elin:{name:'Archivist Elin Vale',gender:'feminine',accessory:'',held:'📚'},
+  joren:{name:'Captain Joren',gender:'masculine',accessory:'',held:'🛡️'},
+  mina:{name:'Mina Thistle',gender:'feminine',accessory:'🌼',held:'💐'},
+  pip:{name:'Pip Rowan',gender:'masculine',accessory:'',held:'🧺'},
+  celeste:{name:'Celeste Vane',gender:'feminine',accessory:'',held:'🎻'},
+  traveler:{name:'You',gender:'feminine',accessory:'',held:'✨'}
+};
+function storyActorMarkup(id='traveler', pose='idle', heldOverride=''){
+  const p=actorProfiles[id]||actorProfiles.traveler;
+  const fem=p.gender==='feminine';
+  return `<div class="story-actor actor-${id} ${fem?'feminine':'short-hair'} pose-${pose}" data-actor-id="${id}">
+    <div class="actor-shadow"></div><div class="actor-leg leg-l"></div><div class="actor-leg leg-r"></div>
+    <div class="actor-arm arm-l"></div><div class="actor-arm arm-r"></div><div class="actor-body"></div><div class="actor-belt"></div><div class="actor-neck"></div>
+    <div class="actor-head"></div><div class="actor-hair"></div><i class="actor-eye eye-l"></i><i class="actor-eye eye-r"></i><i class="actor-mouth"></i>
+    <div class="actor-accessory">${p.accessory||''}</div><div class="actor-held">${heldOverride||p.held||''}</div><div class="actor-nameplate">${p.name}</div>
+  </div>`;
+}
+function ensureCinemaStage(){
+  const art=$('#cinemaSceneArt'); if(!art)return;
+  if(!$('#cinemaSetPiece')){const set=document.createElement('div');set.id='cinemaSetPiece';set.className='cinema-set-piece';set.innerHTML='<div class="set-floor"></div><div class="set-window"></div><div class="set-table"></div><div class="set-lantern">🏮</div><div class="set-lantern r">🏮</div>';art.appendChild(set);}
+  if(!$('#cinemaActionCaption')){const cap=document.createElement('div');cap.id='cinemaActionCaption';cap.className='cinema-action-caption';art.appendChild(cap);}
+  if(!$('#cinemaActionProp')){const prop=document.createElement('div');prop.id='cinemaActionProp';prop.className='cinema-prop center';art.appendChild(prop);}
+  if(!$('#cinemaCurtain')){const c=document.createElement('div');c.id='cinemaCurtain';c.className='cinema-screen-curtain';art.appendChild(c);}
+}
+function showActionCaption(text, ms=2200){ensureCinemaStage();const c=$('#cinemaActionCaption');c.textContent=text;c.classList.add('show');clearTimeout(c._timer);c._timer=setTimeout(()=>c.classList.remove('show'),ms);}
+function showActionProp(icon,ms=1800){ensureCinemaStage();const p=$('#cinemaActionProp');p.textContent=icon;p.classList.add('show');clearTimeout(p._timer);p._timer=setTimeout(()=>p.classList.remove('show'),ms);}
+function setActorPose(id,pose='idle',held){const a=document.querySelector(`.story-actor[data-actor-id="${id}"]`);if(!a)return;a.className=a.className.replace(/pose-[\w-]+/g,'').trim()+` pose-${pose}`;if(held){a.classList.add('holding');const h=a.querySelector('.actor-held');if(h)h.textContent=held;}return a;}
+function speakActor(id,on=true){const a=document.querySelector(`.story-actor[data-actor-id="${id}"]`);if(a)a.classList.toggle('speaking',on);}
+function actorForSpeaker(speaker){const p=kingdomPeople.find(x=>x.name===speaker);return p?.id||({'Queen Elowen':'queen','Prince Lucien':'prince','Mara Bell':'mara','Tomas Hearth':'tomas','Archivist Elin Vale':'elin','Captain Joren':'joren','Mina Thistle':'mina','Pip Rowan':'pip','Celeste Vane':'celeste'}[speaker]);}
+function stageActors(ids,poses={}){const e=cinemaEls();e.chars.innerHTML=ids.map(id=>storyActorMarkup(id,poses[id]||'idle')).join('');}
+function cinemaAct({actors=['traveler'],poses={},caption='',prop='',duration=1500,after}={}){
+  ensureCinemaStage();const e=cinemaEls();e.world.classList.add('action-mode');stageActors(actors,poses);if(caption)showActionCaption(caption,duration+500);if(prop)showActionProp(prop,duration);
+  Object.entries(poses).forEach(([id,pose])=>setActorPose(id,pose,prop&&id===actors[actors.length-1]?prop:null));
+  setTimeout(()=>{e.world.classList.remove('action-mode');if(after)after();},duration);
+}
+function cinematicCut(fn){ensureCinemaStage();const c=$('#cinemaCurtain');c.classList.add('show');setTimeout(()=>{fn?.();c.classList.remove('show');},320);}
+
+const _renderCinemaRoomActed=renderCinemaRoom;
+renderCinemaRoom=function(index,intro){
+  ensureCinemaStage();cinematicCut(()=>{_renderCinemaRoomActed(index,intro);stageActors(['traveler'],{traveler:'idle'});showActionCaption('You step into the scene. The kingdom is moving around you.',1700);});
+};
+const _cinemaTransitionRoomActed=cinemaTransitionRoom;
+cinemaTransitionRoom=function(index,intro){cinemaAct({actors:['traveler'],poses:{traveler:'walk'},caption:'You cross the room and continue onward…',duration:850,after:()=>_cinemaTransitionRoomActed(index,intro)});};
+const _cinemaDialogueActed=cinemaDialogue;
+cinemaDialogue=function(speaker,portrait,text,choices=[]){
+  _cinemaDialogueActed(speaker,portrait,text,choices);
+  const id=actorForSpeaker(speaker);if(id){if(!document.querySelector(`.story-actor[data-actor-id="${id}"]`))stageActors(id==='queen'||id==='prince'?['traveler',id]:[id,'traveler']);speakActor(id,true);setTimeout(()=>speakActor(id,false),Math.min(3200,900+text.length*18));}
+  const el=$('#cinemaText');if(el){el.textContent='';let i=0;clearInterval(el._typeTimer);el._typeTimer=setInterval(()=>{el.textContent=text.slice(0,++i);if(i>=text.length)clearInterval(el._typeTimer);},12);}
+};
+
+function actedHotspot(key){
+  const sequences={
+    portrait:{actors:['traveler'],poses:{traveler:'point'},caption:'You cross the hall and trace the faint outline on the portrait frame.',prop:'🖼️'},
+    footsteps:{actors:['traveler'],poses:{traveler:'walk'},caption:'You follow the hurried footsteps to the tapestry. Cold air slips from behind it.',prop:'👣'},
+    book:{actors:['traveler','elin'],poses:{traveler:'think',elin:'point'},caption:'Archivist Elin turns the old volume toward you and points to a handwritten warning.',prop:'📖'},
+    key:{actors:['traveler'],poses:{traveler:'handover'},caption:'You lift the brass key. It catches the candlelight in your palm.',prop:'🗝️'},
+    tart:{actors:['traveler','tomas'],poses:{traveler:'idle',tomas:'handover'},caption:'Tomas slides a warm tart across the table. Steam curls into the air.',prop:'🥧'},
+    basket:{actors:['traveler','tomas'],poses:{traveler:'think',tomas:'point'},caption:'You kneel beside the delivery basket while Tomas points out a torn blue thread.',prop:'🧺'},
+    corridor:{actors:['traveler','mara'],poses:{traveler:'walk',mara:'wave'},caption:'Mara slips through the servants’ door and waves urgently for you to follow.',prop:'🚪'},
+    mask:{actors:['traveler','celeste'],poses:{traveler:'surprise',celeste:'idle'},caption:'You lift the silver mask. Across the ballroom, Celeste stops playing and looks straight at you.',prop:'🎭'},
+    music:{actors:['traveler','celeste'],poses:{traveler:'idle',celeste:'play-violin'},caption:'Celeste raises her violin. The melody fills the empty ballroom while candlelight shimmers.',prop:'🎻'},
+    dance:{actors:['traveler','celeste'],poses:{traveler:'dance',celeste:'dance'},caption:'You sweep onto the ballroom floor. For a few moments the empty hall becomes a celebration.',prop:'✨'},
+    bluelight:{actors:['traveler'],poses:{traveler:'walk'},caption:'The blue light darts between the trees. You push through silver ferns to keep up.',prop:'✨'},
+    marker:{actors:['traveler'],poses:{traveler:'think'},caption:'You brush moss from the stone marker until an old royal crest appears.',prop:'🪨'},
+    fox:{actors:['traveler'],poses:{traveler:'walk'},caption:'A fox glances back, then trots deeper into the moonlit trees. You follow.',prop:'🦊'},
+    parcel:{actors:['traveler'],poses:{traveler:'surprise'},caption:'The harbor clerk sets a parcel in your hands. Your name is written across the wrapping.',prop:'📦'},
+    ship:{actors:['traveler','celeste'],poses:{traveler:'point',celeste:'idle'},caption:'A blue-and-gold ship glides against the pier while sailors lower the gangplank.',prop:'⛵'},
+    pier:{actors:['traveler'],poses:{traveler:'idle'},caption:'You walk to the end of the pier. Lantern reflections stretch across the water.',prop:'🌊'}
+  };
+  const seq=sequences[key];if(seq){cinemaAct({...seq,duration:key==='dance'?2400:1500,after:()=>{const m=cinemaMoments[key];if(m)_cinemaDialogueActed(m.speaker,m.portrait,m.text,m.choices);}});}else{const m=cinemaMoments[key];if(m)_cinemaDialogueActed(m.speaker,m.portrait,m.text,m.choices);}
+}
+cinemaHotspot=actedHotspot;
+
+openCinemaPerson=function(id){
+  const p=kingdomPeople.find(x=>x.id===id);if(!p)return;stageActors(['traveler',id],{traveler:'idle',[id]:'wave'});showActionCaption(`${p.name} notices you and comes over.`,1200);setTimeout(()=>{
+    const level=friendship(id);const lines={queen:['“Come walk with me. Courts are easier to understand from the garden than from a throne.”','“You are beginning to know this kingdom as people know a favorite story—not by the ending, but by the little details.”'],prince:['“I found another road that is absolutely not on the official map. Naturally, I intend to take it.”','“Every ordinary afternoon turns into a story when you are around.”'],mara:['“I heard something you are definitely not supposed to know yet.”','“At this point, I should probably just give you your own key to the servants’ corridor.”'],tomas:['“Sit. Eat. Then tell me why you look like you have been following mysterious footprints again.”','“I saved you the good pastry. That is how serious this friendship has become.”'],elin:['“A document is waiting for you in the archive. It may be nothing.”','“I have stopped pretending you will stay out of old records, so I set aside the interesting ones.”'],joren:['“If you found another secret passage, I would like five quiet minutes first.”','“I trust your judgment. I am not saying that loudly where the other guards can hear me.”'],mina:['“I knew you were coming. No, not magic—the baker saw you turn the corner.”','“I made something for you. Friendship ruins perfectly good arithmetic.”'],pip:['“Want to know a shortcut? It is only illegal if Captain Joren catches us.”','“You are officially one of my favorite grown-ups because you actually follow the interesting clues.”'],celeste:['“Some melodies only make sense after you have heard the place they came from.”','“You hear the kingdom differently now. That is why I can finally show you the unfinished song.”']};
+    const line=(lines[id]||[p.line,p.line])[level>=4?1:0];
+    cinemaDialogue(p.name,p.avatar,line,[['Talk about the kingdom',()=>{setActorPose(id,'point');bumpFriendship(id,1);cinemaDialogue(p.name,p.avatar,`“${p.rumors[Math.floor(Math.random()*p.rumors.length)]}”`,[['Ask another question',()=>openCinemaPerson(id)],['Say goodbye',()=>renderCinemaRoom(cinema.room)]])}],['Do something together',()=>cinemaTogether(p)],['Give a small gift',()=>cinemaAct({actors:['traveler',id],poses:{traveler:'handover',[id]:'surprise'},caption:`You hand ${p.name} a small gift.`,prop:'🎁',duration:1400,after:()=>{bumpFriendship(id,2);cinemaDialogue(p.name,p.avatar,`“You remembered me. Thank you.” Friendship is now ${friendship(id)}/10.`,[['Continue talking',()=>openCinemaPerson(id)],['Return to scene',()=>renderCinemaRoom(cinema.room)]])}})],['Return to scene',()=>renderCinemaRoom(cinema.room)]]);
+  },700);
+};
+cinemaTogether=function(p){
+  const scenes=[
+    {caption:`You and ${p.name} stroll through the lantern-lit courtyard.`,pose:'walk',prop:'🏮'},
+    {caption:`${p.name} shares a warm pastry with you beside the fountain.`,pose:'handover',prop:'🥐'},
+    {caption:`You both try on ridiculous festival hats and immediately start laughing.`,pose:'dance',prop:'🎩'},
+    {caption:`You take the long garden path while ${p.name} points out hidden roses.`,pose:'point',prop:'🌹'},
+    {caption:`You sit on the castle steps while musicians rehearse nearby.`,pose:p.id==='celeste'?'play-violin':'idle',prop:'🎶'}
+  ];const s=scenes[Math.floor(Math.random()*scenes.length)];bumpFriendship(p.id,1);earnCoins(1);cinemaUpdateStats();addJournal(`Spent time with ${p.name}.`);cinemaAct({actors:['traveler',p.id],poses:{traveler:s.pose,[p.id]:s.pose},caption:s.caption,prop:s.prop,duration:2400,after:()=>cinemaDialogue(p.name,p.avatar,'“That was better than another formal audience, wasn’t it?”',[['Stay a little longer',()=>openCinemaPerson(p.id)],['Continue exploring',()=>renderCinemaRoom(cinema.room)]])});
+};
+
+const _playQuestStepActed=playQuestStep;
+playQuestStep=function(){
+  const q=cinema.quest,step=q?.[2]?.[cinema.questStep];if(!step)return _playQuestStepActed();
+  const actor=q[0].includes('Baker')?'tomas':q[0].includes('Swan')?'mina':'elin';
+  stageActors(['traveler',actor],{traveler:'walk',[actor]:'idle'});showActionCaption(`${step[0]} — the next part of the quest begins.`,1200);
+  setTimeout(()=>_playQuestStepActed(),650);
+};
+
+ensureCinemaStage();
