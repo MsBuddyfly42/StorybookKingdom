@@ -7,6 +7,7 @@
   <meta name="description" content="Storybook Kingdom — an interactive fairy-tale world for exploration, role-play, stories, mysteries, games, festivals, quests, and cozy visits." />
   <title>Storybook Kingdom</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="castle-game.css" />
 </head>
 <body>
   <div class="sparkle-layer" aria-hidden="true"></div>
@@ -41,6 +42,7 @@
 
           <div class="hero-buttons">
             <button class="primary-btn" data-view="explore">Enter the Kingdom</button>
+            <button id="rgStartBtn" class="primary-btn cinematic-btn">🏰 Enter the Playable Castle</button>
             <button id="immersiveStartBtn" class="primary-btn cinematic-btn">Enter Cinematic Story Mode ✨</button>
             <button class="secondary-btn" data-view="cozy">Just Visit ✨</button>
             <button id="continueKingdomBtn" class="secondary-btn hidden">Continue Last Visit</button>
@@ -626,5 +628,6 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="castle-game.js"></script>
 </body>
 </html>
