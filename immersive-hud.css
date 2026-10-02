@@ -1,0 +1,38 @@
+/* Cinematic HUD focus */
+#livingWorld .world-top,
+#livingWorld .world-info,
+#livingWorld .world-lower,
+#livingWorld .game-shell,
+#livingWorld .world-pulse,
+#livingWorld .life-compass,
+#livingWorld .game-quest-panel,
+#livingWorld .play-hud{
+  transition:opacity .4s ease,transform .4s ease,filter .4s ease;
+}
+#livingWorld.hud-resting .world-top,
+#livingWorld.hud-resting .world-info,
+#livingWorld.hud-resting .world-lower,
+#livingWorld.hud-resting .game-shell,
+#livingWorld.hud-resting .world-pulse,
+#livingWorld.hud-resting .life-compass,
+#livingWorld.hud-resting .game-quest-panel{
+  opacity:.08;
+  filter:blur(.3px);
+  pointer-events:none;
+}
+#livingWorld.hud-resting .world-top{transform:translateY(-8px)}
+#livingWorld.hud-resting .world-lower{transform:translateY(8px)}
+#livingWorld.hud-resting .play-hud{opacity:.18}
+#livingWorld.hud-resting #playObjective{opacity:0}
+#livingWorld.hud-resting #worldStage{box-shadow:0 28px 70px #07040fa8,inset 0 0 0 1px #ffffff15}
+#livingWorld.hud-resting .play-controls,
+#livingWorld.hud-resting .play-action-mobile{opacity:.48}
+#livingWorld.hud-resting .play-near,
+#livingWorld.hud-resting .quest-route{opacity:1!important}
+@media(max-width:700px){
+ #livingWorld.hud-resting .play-hud{opacity:.08}
+ #livingWorld.hud-resting .play-controls,#livingWorld.hud-resting .play-action-mobile{opacity:.68}
+}
+@media(prefers-reduced-motion:reduce){
+ #livingWorld .world-top,#livingWorld .world-info,#livingWorld .world-lower,#livingWorld .game-shell,#livingWorld .world-pulse,#livingWorld .life-compass,#livingWorld .game-quest-panel,#livingWorld .play-hud{transition:none!important}
+}
