@@ -6,7 +6,7 @@ const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const game={
   mounted:false,active:false,x:50,y:76,facing:'right',
   keys:new Set(),raf:0,last:0,near:null,portals:[],observer:null,
-  speed:24,moveTarget:null,path:[],pendingSpawn:null,sceneTimer:0,autoInteractTarget:null,approachTarget:null
+  speed:24,moveTarget:null,path:[],pendingSpawn:null,sceneTimer:0,autoInteractTarget:null,approachTarget:null,routeGoal:null,stuckFrames:0,lastRouteX:50,lastRouteY:76
 };
 function root(){return $('#livingWorld')}
 function stage(){return $('#worldStage')}
@@ -67,8 +67,17 @@ function planPath(start,end,ignore=null){
   path.push(end);return path
 }
 function beginAutoWalk(target,ignore=null){
+  game.routeGoal={...target};game.stuckFrames=0;game.lastRouteX=game.x;game.lastRouteY=game.y;
   game.path=planPath({x:game.x,y:game.y},target,ignore);
   game.moveTarget=game.path.shift()||target;
+  player()?.classList.add('route-walk');
+}
+function replanRoute(){
+  if(!game.routeGoal)return;
+  const ignore=game.approachTarget||game.autoInteractTarget||null;
+  game.path=planPath({x:game.x,y:game.y},game.routeGoal,ignore);
+  game.moveTarget=game.path.shift()||game.routeGoal;
+  game.stuckFrames=0;game.lastRouteX=game.x;game.lastRouteY=game.y;
 }
 function setPlayer(){
   const p=player();if(!p)return;
@@ -127,7 +136,7 @@ function updateNear(){
 }
 function interactTarget(t){
   if(!game.active||!t)return;
-  game.moveTarget=null;game.path=[];game.autoInteractTarget=null;
+  game.moveTarget=null;game.path=[];game.routeGoal=null;game.stuckFrames=0;player()?.classList.remove('route-walk');game.autoInteractTarget=null;
   document.dispatchEvent(new CustomEvent('storybook:interact',{detail:{type:t.type,label:t.label,location:$('#worldTitle')?.textContent||''}}));
   if(t.el){t.el.classList.remove('play-near','approach-target');t.el.classList.add('interaction-triggered');setTimeout(()=>t.el?.classList.remove('interaction-triggered'),700)}
   game.near=null;
@@ -140,7 +149,7 @@ function interact(){
 }
 function move(dx,dy,dt,isAuto=false){
   if(!game.active)return;
-  if((dx||dy)&&!isAuto){game.moveTarget=null;game.path=[];game.autoInteractTarget=null;if(game.approachTarget){game.approachTarget.classList.remove('approach-target');game.approachTarget=null}}
+  if((dx||dy)&&!isAuto){game.moveTarget=null;game.path=[];game.routeGoal=null;game.stuckFrames=0;player()?.classList.remove('route-walk');game.autoInteractTarget=null;if(game.approachTarget){game.approachTarget.classList.remove('approach-target');game.approachTarget=null}}
   const boost=game.keys.has('shift')?1.65:1;
   const scale=game.speed*boost*dt;
   if(dx){game.x=clamp(game.x+dx*scale,5,95);game.facing=dx<0?'left':'right'}
@@ -182,7 +191,13 @@ function frame(ts){
     }else{dx=tx/dist;dy=ty/dist}
   }
   if(dx&&dy&&!isAuto){dx*=.707;dy*=.707}
+  if(isAuto&&game.moveTarget){
+    const moved=Math.hypot(game.x-game.lastRouteX,game.y-game.lastRouteY);
+    if(moved<.03)game.stuckFrames++;else{game.stuckFrames=0;game.lastRouteX=game.x;game.lastRouteY=game.y}
+    if(game.stuckFrames>18)replanRoute()
+  }
   move(dx,dy,dt,isAuto);
+  if(!game.moveTarget&&!game.path.length){player()?.classList.remove('route-walk');game.routeGoal=null;game.stuckFrames=0}
   game.raf=requestAnimationFrame(frame);
 }
 function buildPortals(){
@@ -219,7 +234,7 @@ function sceneChanged(){
   clearTimeout(game.sceneTimer);
   game.sceneTimer=setTimeout(()=>{
     game.active=true;root().classList.add('play-mode');
-    game.autoInteractTarget=null;game.approachTarget=null;game.path=[];resetPlayer();buildPortals();updateNear();showTip();
+    game.autoInteractTarget=null;game.approachTarget=null;game.path=[];game.routeGoal=null;game.stuckFrames=0;player()?.classList.remove('route-walk');resetPlayer();buildPortals();updateNear();showTip();
     document.dispatchEvent(new CustomEvent('storybook:location',{detail:{name:$('#worldTitle')?.textContent||'',zone:root().dataset.zone||''}}));
   },55);
 }

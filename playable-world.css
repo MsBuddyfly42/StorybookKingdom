@@ -218,3 +218,9 @@
 
 #worldActor.is-moving.route-walk{filter:drop-shadow(0 9px 5px #0008)}
 .approach-target:before{content:"";position:absolute;left:50%;bottom:-10px;transform:translateX(-50%);width:22px;height:7px;border-radius:50%;background:#ffe49b42;filter:blur(3px);pointer-events:none}
+
+#worldActor.route-walk{animation:routeStride .34s ease-in-out infinite alternate!important}
+@keyframes routeStride{from{translate:0 0}to{translate:0 -5px}}
+#worldActor.route-walk:after{content:"";position:absolute;left:50%;bottom:-5px;width:34px;height:8px;border-radius:50%;background:#0003;filter:blur(3px);transform:translateX(-50%);animation:routeShadow .34s ease-in-out infinite alternate}
+@keyframes routeShadow{to{width:27px;opacity:.52}}
+@media(prefers-reduced-motion:reduce){#worldActor.route-walk,#worldActor.route-walk:after{animation:none!important}}
