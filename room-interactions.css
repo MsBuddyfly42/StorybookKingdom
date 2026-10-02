@@ -1,0 +1,13 @@
+/* Usable furniture and room features */
+.room-use-layer{position:absolute;inset:0;z-index:16;pointer-events:none}
+.room-use{pointer-events:auto!important;background:transparent!important;border-color:transparent!important;box-shadow:none!important;opacity:.18!important;min-width:50px!important;min-height:45px!important;padding:3px!important}
+.room-use span{font-size:1.35rem!important;filter:grayscale(.15) brightness(.95);transition:.18s}
+.room-use small{opacity:0!important;transition:.18s;background:#251b30df;padding:3px 6px;border-radius:999px;white-space:nowrap}
+.room-use.play-near{opacity:1!important;filter:drop-shadow(0 0 10px #ffe49d)!important}
+.room-use.play-near span{transform:scale(1.08);filter:none}
+.room-use.play-near small{opacity:1!important}
+#worldActor[data-pose="sit"]{translate:0 7px;scale:calc(var(--depth-scale,1) * .88)}
+#worldActor[data-pose="dance"]{animation:roomDance .65s ease-in-out infinite alternate}
+@keyframes roomDance{to{rotate:5deg;translate:7px -5px}}
+@media(max-width:650px){.room-use{min-width:44px!important;min-height:42px!important}.room-use span{font-size:1.15rem!important}.room-use small{font-size:.58rem!important}}
+@media(prefers-reduced-motion:reduce){.room-use span,.room-use small,#worldActor[data-pose="dance"]{animation:none!important;transition:none!important}}
