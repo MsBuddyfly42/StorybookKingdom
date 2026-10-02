@@ -6,12 +6,12 @@ const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const game={
   mounted:false,active:false,x:50,y:76,facing:'right',
   keys:new Set(),raf:0,last:0,near:null,portals:[],observer:null,
-  speed:24
+  speed:24,moveTarget:null,pendingSpawn:null,sceneTimer:0
 };
 function root(){return $('#livingWorld')}
 function stage(){return $('#worldStage')}
 function player(){return $('#worldActor')}
-function isTyping(){return /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(document.activeElement?.tagName||'')}
+function isTyping(){return /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName||'')}
 function pctPos(el){
   const st=stage();if(!st||!el)return null;
   const sr=st.getBoundingClientRect(), r=el.getBoundingClientRect();
@@ -63,6 +63,8 @@ function updateNear(){
 function interact(){
   if(!game.active||!game.near)return;
   const t=game.near;
+  game.moveTarget=null;
+  document.dispatchEvent(new CustomEvent('storybook:interact',{detail:{type:t.type,label:t.label,location:$('#worldTitle')?.textContent||''}}));
   if(t.el)t.el.classList.remove('play-near');
   game.near=null;
   t.action();
@@ -70,6 +72,7 @@ function interact(){
 }
 function move(dx,dy,dt){
   if(!game.active)return;
+  if(dx||dy)game.moveTarget=null;
   const scale=game.speed*dt;
   if(dx){game.x=clamp(game.x+dx*scale,5,95);game.facing=dx<0?'left':'right'}
   if(dy)game.y=clamp(game.y+dy*scale,18,88);
@@ -84,7 +87,12 @@ function frame(ts){
   if(game.keys.has('arrowright')||game.keys.has('d'))dx++;
   if(game.keys.has('arrowup')||game.keys.has('w'))dy--;
   if(game.keys.has('arrowdown')||game.keys.has('s'))dy++;
-  if(dx&&dy){dx*=.707;dy*=.707}
+  if(!dx&&!dy&&game.moveTarget){
+    const tx=game.moveTarget.x-game.x,ty=game.moveTarget.y-game.y,dist=Math.hypot(tx,ty);
+    if(dist<1.2){game.moveTarget=null}
+    else{dx=tx/dist;dy=ty/dist}
+  }
+  if(dx&&dy&&!game.moveTarget){dx*=.707;dy*=.707}
   move(dx,dy,dt);
   game.raf=requestAnimationFrame(frame);
 }
@@ -104,19 +112,26 @@ function buildPortals(){
     const label=(road.textContent||'Next location').trim();
     door.innerHTML='<span class="play-door">'+(i<2?'🚪':'🛤️')+'</span><small>'+label.replace(/[<>&]/g,'')+'</small>';
     layer.appendChild(door);
-    game.portals.push({type:'portal',el:door,label,action:()=>road.click()});
+    game.portals.push({type:'portal',el:door,label,action:()=>{
+      game.pendingSpawn=x<25?{x:88,y:76}:x>75?{x:12,y:76}:y<40?{x:50,y:82}:{x:50,y:30};
+      road.click();
+    }});
   });
   updateNear();
 }
 function resetPlayer(){
-  game.x=50;game.y=78;game.facing='right';setPlayer();
+  const spawn=game.pendingSpawn;game.pendingSpawn=null;
+  game.x=spawn?.x??50;game.y=spawn?.y??78;game.facing=game.x>50?'left':'right';setPlayer();
   const p=player();if(p)p.classList.remove('is-moving');
 }
 function sceneChanged(){
   if(!root()||root().hidden)return;
-  game.active=true;root().classList.add('play-mode');
-  resetPlayer();
-  setTimeout(()=>{buildPortals();updateNear();showTip()},40);
+  clearTimeout(game.sceneTimer);
+  game.sceneTimer=setTimeout(()=>{
+    game.active=true;root().classList.add('play-mode');
+    resetPlayer();buildPortals();updateNear();showTip();
+    document.dispatchEvent(new CustomEvent('storybook:location',{detail:{name:$('#worldTitle')?.textContent||'',zone:root().dataset.zone||''}}));
+  },55);
 }
 let tipTimer=0;
 function showTip(){
@@ -164,6 +179,18 @@ function mount(){
   });
   game.observer.observe(r,{subtree:true,childList:true,characterData:true});
   new MutationObserver(()=>{game.active=!r.hidden;if(game.active)sceneChanged();else game.keys.clear()}).observe(r,{attributes:true,attributeFilter:['hidden']});
+  st.addEventListener('click',e=>{
+    if(!game.active||e.detail===0)return;
+    const target=e.target.closest('.world-hotspot,.world-npc,.play-portal');
+    if(!target)return;
+    e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+    const pos=pctPos(target);if(pos){game.moveTarget={x:pos.x,y:clamp(pos.y+5,18,88)};showTip()}
+  },true);
+  st.addEventListener('pointerdown',e=>{
+    if(!game.active||e.target.closest('button,.world-hotspot,.world-npc,.play-portal'))return;
+    const r=st.getBoundingClientRect();
+    game.moveTarget={x:clamp(((e.clientX-r.left)/r.width)*100,5,95),y:clamp(((e.clientY-r.top)/r.height)*100,18,88)};
+  });
   document.addEventListener('keydown',e=>{
     if(!game.active||isTyping())return;
     const k=e.key.toLowerCase();

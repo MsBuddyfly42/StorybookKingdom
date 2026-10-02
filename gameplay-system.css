@@ -1,0 +1,13 @@
+/* Storybook Kingdom gameplay progression */
+.game-quest-panel{margin:8px 0 12px;padding:13px 14px;border:1px solid #dfc48679;border-radius:16px;background:linear-gradient(125deg,#342741f2,#513b60ed);color:#fff2d2;box-shadow:0 8px 22px #0b071844}
+.game-quest-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.game-quest-head>div{display:grid;gap:2px}.game-quest-head small{font-size:.65rem;letter-spacing:.12em;color:#eecf90}.game-quest-head strong{font-size:1rem}
+#gameStars{white-space:nowrap;font-weight:900;background:#261c31b5;border:1px solid #efd49755;border-radius:999px;padding:6px 10px}
+.game-quest-panel p{margin:9px 0;line-height:1.45;font-size:.88rem}.game-progress{height:7px;border-radius:999px;background:#1b1525;overflow:hidden}
+.game-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#d99c57,#ffe2a0);transition:width .35s ease}
+.game-quest-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px;flex-wrap:wrap}.game-quest-foot>span{font-size:.72rem;color:#ead6ad}
+.game-quest-foot>div{display:flex;gap:7px;flex-wrap:wrap}.game-quest-foot button{min-height:38px;border:1px solid #e8cf9b88;border-radius:10px;padding:7px 10px;background:#654b72;color:white;font-weight:800}.game-quest-foot button:disabled{opacity:.48}
+.game-flash{position:fixed;z-index:40000;left:50%;top:78px;transform:translate(-50%,-12px);max-width:min(88vw,620px);padding:11px 18px;border-radius:999px;background:#2c2038ed;border:1px solid #f4d88d;color:#fff2ce;font-weight:900;text-align:center;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 9px 30px #0006}
+.game-flash.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:620px){.game-quest-panel{padding:11px}.game-quest-foot{display:grid;grid-template-columns:1fr}.game-quest-foot>div{display:grid;grid-template-columns:1fr 1fr}.game-quest-foot button{min-height:44px}.game-flash{top:66px;border-radius:14px}}
+@media(prefers-reduced-motion:reduce){.game-progress i,.game-flash{transition:none}}
