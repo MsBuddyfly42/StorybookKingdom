@@ -66,20 +66,28 @@ function correct(){
  }else{
   gameState.lastX=x;gameState.lastY=y;gameState.blocked=false
  }
- a.style.left=x+'%';a.style.top=y+'%';
+ const nx=x+'%',ny=y+'%';if(a.style.left!==nx)a.style.left=nx;if(a.style.top!==ny)a.style.top=ny;
  depth(y);
  faceNearby();
 }
 function depth(y){
  const a=actor();if(!a)return;
  const min=.78,max=1.08,scale=min+(Math.max(24,Math.min(88,y))-24)/(88-24)*(max-min);
- a.style.setProperty('--depth-scale',scale.toFixed(3));
+ const ds=scale.toFixed(3);if(a.style.getPropertyValue('--depth-scale')!==ds)a.style.setProperty('--depth-scale',ds);
  a.style.zIndex=String(20+Math.round(y));
  $$('.world-npc',stage()||document).forEach(n=>{
   const r=pctRect(n);if(!r)return;
   const cy=(r.t+r.b)/2,ns=min+(Math.max(24,Math.min(88,cy))-24)/(88-24)*(max-min);
-  n.style.setProperty('--npc-depth',ns.toFixed(3));n.style.zIndex=String(18+Math.round(cy))
+  const nd=ns.toFixed(3);if(n.style.getPropertyValue('--npc-depth')!==nd)n.style.setProperty('--npc-depth',nd);n.style.zIndex=String(18+Math.round(cy))
  })
+}
+function approachPose(){
+ const a=actor(),near=$('.play-near',stage()||document);if(!a)return;
+ a.classList.toggle('near-door',!!near?.classList.contains('play-portal'));
+ a.classList.toggle('near-person',!!near?.classList.contains('world-npc'));
+ if(near?.classList.contains('play-portal')){
+  const r=pctRect(near);if(r){const cx=(r.l+r.r)/2;a.dataset.facing=cx<playerPos().x?'left':'right'}
+ }
 }
 function faceNearby(){
  const a=actor();if(!a)return;
@@ -88,6 +96,7 @@ function faceNearby(){
  const r=pctRect(near);if(!r)return;
  const cx=(r.l+r.r)/2;
  a.dataset.facing=cx<pos.x?'left':'right';
+ approachPose();
  if(near.classList.contains('world-npc')){
   const nr=pctRect(near),nx=(nr.l+nr.r)/2;
   near.dataset.facing=pos.x<nx?'left':'right'
@@ -105,7 +114,6 @@ function markFloor(){
 function mount(){
  if(!root()||!stage()||!actor())return false;
  gameState.lastX=playerPos().x;gameState.lastY=playerPos().y;
- const mo=new MutationObserver(correct);mo.observe(actor(),{attributes:true,attributeFilter:['style','class','data-facing']});
  document.addEventListener('storybook:location',()=>setTimeout(()=>{const p=playerPos();gameState.lastX=p.x;gameState.lastY=p.y;markFloor();correct()},140));
  new MutationObserver(()=>{markFloor();correct()}).observe(root(),{attributes:true,attributeFilter:['data-realism','data-scene','data-zone']});
  setInterval(()=>{if(!document.hidden&&!root().hidden)correct()},70);

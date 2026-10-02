@@ -1,8 +1,8 @@
 /* Spatial realism and collision feedback */
-#worldActor{transform:translate(-50%,-50%) scale(var(--depth-scale,1))!important;transform-origin:50% 100%}
-#worldActor[data-facing="left"]{transform:translate(-50%,-50%) scaleX(-1) scale(var(--depth-scale,1))!important}
+#worldActor{scale:var(--depth-scale,1);transform-origin:50% 100%}
+#worldActor[data-facing="left"]{transform:translate(-50%,-50%) scaleX(-1)!important}
 #worldActor[data-facing="left"] small,#worldActor[data-facing="left"] .equipped-keep{transform:scaleX(-1)}
-.world-npc{transform:translateX(-50%) scale(var(--npc-depth,1));transform-origin:50% 100%}
+.world-npc{scale:var(--npc-depth,1);transform-origin:50% 100%}
 .world-npc[data-facing="left"] span{transform:scaleX(-1)}
 .world-npc[data-facing="left"] small,.world-npc[data-facing="left"] .relationship-badge{transform:scaleX(1)}
 .walkable-floor{position:absolute;z-index:1;border-radius:35% 35% 6% 6%;pointer-events:none;box-shadow:inset 0 0 32px #00000014}
@@ -11,3 +11,8 @@
 .physics-hint{position:absolute;z-index:130;left:50%;bottom:24%;transform:translate(-50%,6px);padding:5px 9px;border-radius:999px;background:#241a2de8;border:1px solid #dbbe8066;color:#f8e6c0;font-size:.66rem;font-weight:800;opacity:0;pointer-events:none;transition:.15s}.physics-hint.show{opacity:.85;transform:translate(-50%,0)}
 .realism-furniture .furniture{transition:filter .18s,transform .18s}.realism-furniture .furniture:hover{filter:drop-shadow(0 8px 6px #0007)}
 @media(prefers-reduced-motion:reduce){.physics-hint,.realism-furniture .furniture{transition:none!important}}
+
+#worldActor.near-door{filter:drop-shadow(0 8px 5px #0008) brightness(1.03)}
+#worldActor.near-person{filter:drop-shadow(0 8px 5px #0008)}
+#worldActor.near-person:after{content:"";position:absolute;left:50%;top:-8px;width:6px;height:6px;border-radius:50%;background:#ffe8a8;box-shadow:0 0 9px #ffe8a8;transform:translateX(-50%)}
+.world-npc.play-near span{transform-origin:50% 100%}
