@@ -217,10 +217,17 @@ function buildPortals(){
     door.innerHTML='<span class="play-door">'+(i<2?'🚪':'🛤️')+'</span><small>'+label.replace(/[<>&]/g,'')+'</small>';
     layer.appendChild(door);
     game.portals.push({type:'portal',el:door,label,action:()=>{
-      game.pendingSpawn=x<25?{x:88,y:76}:x>75?{x:12,y:76}:y<40?{x:50,y:82}:{x:50,y:30};
-      game.active=false;game.keys.clear();game.path=[];game.moveTarget=null;player()?.classList.remove('route-walk');
       const portalType=['door-left','door-right','door-back','door-front','route-gate','route-path'].find(c=>door.classList.contains(c))||'route-path';
-      document.dispatchEvent(new CustomEvent('storybook:before-travel',{detail:{label,from:$('#worldTitle')?.textContent||'',portalType}}));
+      if(portalType==='door-left')game.pendingSpawn={x:88,y:66};
+      else if(portalType==='door-right')game.pendingSpawn={x:12,y:66};
+      else if(portalType==='door-back')game.pendingSpawn={x:50,y:82};
+      else if(portalType==='door-front')game.pendingSpawn={x:50,y:31};
+      else{
+        const px=parseFloat(door.style.left)||50,py=parseFloat(door.style.top)||70;
+        game.pendingSpawn=px<30?{x:86,y:74}:px>70?{x:14,y:74}:py<55?{x:50,y:82}:{x:50,y:28};
+      }
+      game.active=false;game.keys.clear();game.path=[];game.moveTarget=null;player()?.classList.remove('route-walk');
+      document.dispatchEvent(new CustomEvent('storybook:before-travel',{detail:{label,from:$('#worldTitle')?.textContent||'',portalType,spawn:{...game.pendingSpawn}}}));
       setTimeout(()=>road.click(),620);
     }});
   });
