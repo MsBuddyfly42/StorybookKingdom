@@ -1,6 +1,6 @@
 /* Storybook Kingdom — optional quest, checkpoint and exploration systems */
 (()=>{'use strict';
-const $=s=>document.querySelector(s);
+const $=s=>document.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const KEY='storybook_gameplay_v2';
 const load=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return {}}};
 const state={quest:0,step:0,stars:0,completed:[],...load()};
@@ -25,6 +25,41 @@ const quests=[
 function currentQuest(){return quests[state.quest%quests.length]}
 function currentStep(){const q=currentQuest();return q.steps[state.step]||null}
 function currentPlace(){return clean($('#worldTitle')?.textContent)}
+function routeTo(destination){
+ const locs=window.StorybookWorld?.locations?.()||[];
+ const current=locs.find(x=>x.name===currentPlace()),goal=locs.find(x=>x.name===destination);
+ if(!current||!goal)return [];
+ const byId=new Map(locs.map(x=>[x.id,x])),queue=[[current.id]],seen=new Set([current.id]);
+ while(queue.length){
+  const path=queue.shift(),id=path[path.length-1];
+  if(id===goal.id)return path.map(x=>byId.get(x)).filter(Boolean);
+  const node=byId.get(id);
+  for(const next of node?.links||[]){
+   if(!seen.has(next)){seen.add(next);queue.push(path.concat(next))}
+  }
+ }
+ return []
+}
+function updateRoute(){
+ const s=currentStep(),hint=$('#gameRouteHint');
+ $$('.play-portal.quest-route').forEach(x=>x.classList.remove('quest-route'));
+ if(!s){if(hint)hint.textContent='';return}
+ if(!hint)return;
+ if(currentPlace()===s.place){
+  hint.textContent='📍 You are at the quest location. Find the required person or object.';
+  return
+ }
+ const route=routeTo(s.place),next=route[1];
+ if(!next){hint.textContent='🗺️ Open the map to find '+s.place;return}
+ const remaining=Math.max(1,route.length-1);
+ hint.textContent='🧭 Next road: '+next.name+' · '+remaining+' travel step'+(remaining===1?'':'s')+' away';
+ setTimeout(()=>{
+  $$('.play-portal').forEach(p=>{
+   const label=p.querySelector('small')?.textContent||'';
+   if(label.includes(next.name))p.classList.add('quest-route')
+  })
+ },120)
+}
 function render(){
  const q=currentQuest(),s=currentStep();
  if($('#gameStars'))$('#gameStars').textContent='⭐ '+state.stars;
@@ -37,6 +72,7 @@ function render(){
  status.textContent=s?('Step '+(state.step+1)+' of '+q.steps.length+' · '+s.place):('Completed · +'+q.reward+' stars');
  const btn=$('#gameQuestTravel');
  if(btn){btn.disabled=!s;btn.textContent=s?'🧭 Show destination':'✓ Quest completed'}
+ updateRoute();
 }
 function advance(detail){
  const s=currentStep();if(!s)return;
@@ -65,12 +101,12 @@ function showDestination(){
 function mount(){
  const hud=$('#playHud');if(!hud||$('#gameQuestPanel'))return false;
  const panel=document.createElement('section');panel.id='gameQuestPanel';panel.className='game-quest-panel';
- panel.innerHTML='<div class="game-quest-head"><div><small>ACTIVE ADVENTURE</small><strong id="gameQuestTitle"></strong></div><span id="gameStars">⭐ 0</span></div><p id="gameQuestBody"></p><div class="game-progress"><i id="gameQuestBar"></i></div><div class="game-quest-foot"><span id="gameQuestStatus"></span><div><button id="gameQuestTravel" type="button">🧭 Show destination</button><button id="gameQuestNext" type="button">↻ Change quest</button></div></div>';
+ panel.innerHTML='<div class="game-quest-head"><div><small>ACTIVE ADVENTURE</small><strong id="gameQuestTitle"></strong></div><span id="gameStars">⭐ 0</span></div><p id="gameQuestBody"></p><div id="gameRouteHint" class="game-route-hint"></div><div class="game-progress"><i id="gameQuestBar"></i></div><div class="game-quest-foot"><span id="gameQuestStatus"></span><div><button id="gameQuestTravel" type="button">🧭 Show destination</button><button id="gameQuestNext" type="button">↻ Change quest</button></div></div>';
  hud.insertAdjacentElement('afterend',panel);
  $('#gameQuestTravel').addEventListener('click',showDestination);
  $('#gameQuestNext').addEventListener('click',nextQuest);
  document.addEventListener('storybook:interact',e=>advance(e.detail));
- document.addEventListener('storybook:location',render);
+ document.addEventListener('storybook:location',()=>{render();setTimeout(updateRoute,180)});
  render();return true
 }
 function wait(){if(mount())return;const mo=new MutationObserver(()=>{if(mount())mo.disconnect()});mo.observe(document.body,{childList:true,subtree:true})}

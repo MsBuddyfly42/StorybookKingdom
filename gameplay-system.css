@@ -11,3 +11,7 @@
 .game-flash.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:620px){.game-quest-panel{padding:11px}.game-quest-foot{display:grid;grid-template-columns:1fr}.game-quest-foot>div{display:grid;grid-template-columns:1fr 1fr}.game-quest-foot button{min-height:44px}.game-flash{top:66px;border-radius:14px}}
 @media(prefers-reduced-motion:reduce){.game-progress i,.game-flash{transition:none}}
+.game-route-hint{margin:7px 0 10px;padding:7px 9px;border-radius:10px;background:#241b2f9c;border:1px solid #d9bd7a55;color:#f8dfaa;font-size:.76rem;line-height:1.35}
+.play-portal.quest-route{border-color:#fff0a0!important;box-shadow:0 0 0 4px #ffe98233,0 0 34px #ffdf74!important;animation:questRoutePulse .75s ease-in-out infinite alternate!important}
+@keyframes questRoutePulse{to{transform:translate(-50%,-50%) scale(1.12);filter:brightness(1.18)}}
+@media(prefers-reduced-motion:reduce){.play-portal.quest-route{animation:none!important}}
