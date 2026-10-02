@@ -1,0 +1,17 @@
+/* Storybook Kingdom — game shell */
+.game-shell{display:flex;align-items:center;gap:8px;margin:7px 0 9px;padding:7px 9px;border:1px solid #d9bd7a66;border-radius:14px;background:#251c31e8;color:#fff3d5}
+.shell-player{display:grid;gap:0;border:0;background:transparent;color:white;text-align:left;min-width:0}.shell-player span{font-weight:900;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.shell-player small{font-size:.62rem;color:#d8c09a}
+.shell-actions{display:flex;gap:6px;margin-left:auto}.shell-actions button{min-height:38px;border:1px solid #e2ca9880;border-radius:10px;background:#5b456a;color:white;padding:7px 10px;font-weight:800}
+.shell-save{font-size:.68rem;color:#aee7ba;opacity:0;transition:.2s}.shell-save.on{opacity:1}
+.game-shell-overlay{position:fixed;z-index:50000;inset:0;background:#120d1abf;backdrop-filter:blur(7px);display:grid;place-items:center;padding:18px}
+.game-shell-overlay[hidden]{display:none}
+.shell-panel{width:min(680px,94vw);max-height:86vh;overflow:auto;border:1px solid #e2c98688;border-radius:20px;background:linear-gradient(150deg,#2e2239,#4a3656);color:#fff1d3;padding:18px;box-shadow:0 24px 70px #0009}
+.shell-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}.shell-panel-head small{font-size:.65rem;letter-spacing:.12em;color:#e6c67d}.shell-panel-head h2{margin:2px 0 0}.shell-panel-head button{border:1px solid #e6cf9c66;border-radius:10px;background:#5a4367;color:white;width:42px;height:42px}
+.shell-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.shell-menu-grid button,.shell-primary{min-height:48px;border:1px solid #e3ca9380;border-radius:12px;background:#6b4d78;color:white;font-weight:900}
+.shell-controls-card{margin-top:14px;padding:12px;border-radius:13px;background:#20182799;border:1px solid #dbc07d44}.shell-controls-card h3{margin:0 0 8px}.shell-controls-card p{margin:5px 0;font-size:.86rem}
+.shell-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}.shell-stat-grid span{display:grid;gap:2px;padding:10px;border-radius:12px;background:#20182799;border:1px solid #d9bd7a44;text-align:center}.shell-stat-grid b{font-size:1.1rem}.shell-stat-grid small{font-size:.68rem;color:#ddc89f}
+.shell-items{display:flex;flex-wrap:wrap;gap:7px}.shell-items span{padding:7px 9px;border-radius:999px;background:#5b4569;border:1px solid #ddc48a55;font-size:.78rem}.shell-empty{color:#dfcba8}
+.shell-name-label{display:grid;gap:6px;font-weight:800}.shell-name-label input{min-height:46px;border:1px solid #e0c78b70;border-radius:11px;padding:9px 11px;font-size:1rem;background:#211927;color:white}
+.shell-choice-label{margin:15px 0 8px;font-size:.8rem;color:#e5cfa7}.shell-avatar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}.shell-avatar{min-height:62px;border:2px solid transparent;border-radius:13px;background:#241b2e;font-size:2rem}.shell-avatar.selected{border-color:#ffe39b;background:#5f486d;box-shadow:0 0 18px #ffdf8555}
+@media(max-width:600px){.game-shell{flex-wrap:wrap}.shell-save{order:3;width:100%}.shell-menu-grid{grid-template-columns:1fr}.shell-stat-grid{grid-template-columns:1fr 1fr}.shell-avatar-grid{grid-template-columns:repeat(4,1fr)}.shell-panel{padding:14px}.shell-actions button{padding:6px 8px;font-size:.76rem}}
+@media(prefers-reduced-motion:reduce){.shell-save{transition:none}}

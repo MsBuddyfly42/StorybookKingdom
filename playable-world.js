@@ -73,7 +73,8 @@ function interact(){
 function move(dx,dy,dt){
   if(!game.active)return;
   if(dx||dy)game.moveTarget=null;
-  const scale=game.speed*dt;
+  const boost=game.keys.has('shift')?1.65:1;
+  const scale=game.speed*boost*dt;
   if(dx){game.x=clamp(game.x+dx*scale,5,95);game.facing=dx<0?'left':'right'}
   if(dy)game.y=clamp(game.y+dy*scale,18,88);
   const p=player();if(p)p.classList.toggle('is-moving',!!(dx||dy));
@@ -194,7 +195,7 @@ function mount(){
   document.addEventListener('keydown',e=>{
     if(!game.active||isTyping())return;
     const k=e.key.toLowerCase();
-    if(['arrowleft','arrowright','arrowup','arrowdown','w','a','s','d'].includes(k)){e.preventDefault();game.keys.add(k)}
+    if(['arrowleft','arrowright','arrowup','arrowdown','w','a','s','d','shift'].includes(k)){if(k!=='shift')e.preventDefault();game.keys.add(k)}
     if((k==='e'||e.code==='Space')&&!$('#worldAtlas')?.classList.contains('open')){e.preventDefault();interact()}
   });
   document.addEventListener('keyup',e=>game.keys.delete(e.key.toLowerCase()));
