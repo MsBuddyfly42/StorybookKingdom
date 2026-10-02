@@ -1,0 +1,10 @@
+/* Ambient living-world polish */
+.life-compass{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:8px 12px;margin:7px 0 10px;padding:9px 12px;border:1px solid #d7bb8066;border-radius:14px;background:#2b2037e8;color:#f9e9c6}
+.life-compass>strong{font-size:.78rem}.life-compass>div{display:flex;gap:6px;flex-wrap:wrap;min-width:0}.life-compass>div span{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:4px 8px;border-radius:999px;background:#5b4569;font-size:.66rem}
+.life-compass small{font-size:.67rem;color:#dbc49c}.life-compass b{font-size:.75rem;white-space:nowrap;color:#ffe6a2}
+.life-collectibles{position:absolute;inset:0;z-index:24;pointer-events:none}.life-collectible{position:absolute;transform:translate(-50%,-50%);width:38px;height:38px;border:0;border-radius:50%;background:#fff4b31f;color:#fff3ae;font-size:1.9rem;filter:drop-shadow(0 0 10px #ffe987);animation:lifeFloat 1.3s ease-in-out infinite alternate;pointer-events:auto;cursor:pointer}
+.life-collectible.taken{animation:lifeTake .32s ease forwards;pointer-events:none}
+@keyframes lifeFloat{to{transform:translate(-50%,-62%) scale(1.08);filter:drop-shadow(0 0 17px #fff2ad)}}@keyframes lifeTake{to{opacity:0;transform:translate(-50%,-80%) scale(1.7)}}
+.life-toast{position:fixed;z-index:41000;left:50%;bottom:28px;transform:translate(-50%,12px);max-width:88vw;padding:10px 16px;border:1px solid #f2d592;border-radius:999px;background:#2c2038ee;color:#fff0cb;font-weight:850;text-align:center;opacity:0;pointer-events:none;transition:.22s;box-shadow:0 8px 26px #0006}.life-toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:650px){.life-compass{grid-template-columns:1fr auto}.life-compass>div{grid-column:1/-1;order:3}.life-compass>div span{max-width:110px}.life-compass small{grid-column:1}.life-collectible{width:34px;height:34px;font-size:1.6rem}.life-toast{bottom:18px;border-radius:14px}}
+@media(prefers-reduced-motion:reduce){.life-collectible,.life-toast{animation:none!important;transition:none!important}}
