@@ -6,7 +6,7 @@ const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const game={
   mounted:false,active:false,x:50,y:76,facing:'right',
   keys:new Set(),raf:0,last:0,near:null,portals:[],observer:null,
-  speed:24,moveTarget:null,pendingSpawn:null,sceneTimer:0
+  speed:24,moveTarget:null,pendingSpawn:null,sceneTimer:0,autoInteractTarget:null
 };
 function root(){return $('#livingWorld')}
 function stage(){return $('#worldStage')}
@@ -73,19 +73,22 @@ function updateNear(){
     if(mobile){mobile.disabled=true;mobile.classList.remove('ready');mobile.textContent='INTERACT'}
   }
 }
-function interact(){
-  if(!game.active||!game.near)return;
-  const t=game.near;
-  game.moveTarget=null;
+function interactTarget(t){
+  if(!game.active||!t)return;
+  game.moveTarget=null;game.autoInteractTarget=null;
   document.dispatchEvent(new CustomEvent('storybook:interact',{detail:{type:t.type,label:t.label,location:$('#worldTitle')?.textContent||''}}));
-  if(t.el)t.el.classList.remove('play-near');
+  if(t.el){t.el.classList.remove('play-near','approach-target');t.el.classList.add('interaction-triggered');setTimeout(()=>t.el?.classList.remove('interaction-triggered'),700)}
   game.near=null;
   t.action();
   setTimeout(()=>{buildPortals();updateNear()},140);
 }
+function interact(){
+  if(!game.active||!game.near)return;
+  interactTarget(game.near);
+}
 function move(dx,dy,dt){
   if(!game.active)return;
-  if(dx||dy){game.moveTarget=null;if(game.approachTarget){game.approachTarget.classList.remove('approach-target');game.approachTarget=null}}
+  if(dx||dy){game.moveTarget=null;game.autoInteractTarget=null;if(game.approachTarget){game.approachTarget.classList.remove('approach-target');game.approachTarget=null}}
   const boost=game.keys.has('shift')?1.65:1;
   const scale=game.speed*boost*dt;
   if(dx){game.x=clamp(game.x+dx*scale,5,95);game.facing=dx<0?'left':'right'}
@@ -103,7 +106,23 @@ function frame(ts){
   if(game.keys.has('arrowdown')||game.keys.has('s'))dy++;
   if(!dx&&!dy&&game.moveTarget){
     const tx=game.moveTarget.x-game.x,ty=game.moveTarget.y-game.y,dist=Math.hypot(tx,ty);
-    if(dist<1.2){game.moveTarget=null;if(game.approachTarget){game.approachTarget.classList.remove('approach-target');game.approachTarget.classList.add('approach-arrived');setTimeout(()=>game.approachTarget?.classList.remove('approach-arrived'),900);game.approachTarget=null}updateNear()}
+    if(dist<1.2){
+      game.moveTarget=null;
+      const arrived=game.approachTarget;
+      if(arrived){
+        arrived.classList.remove('approach-target');arrived.classList.add('approach-arrived');
+        setTimeout(()=>arrived?.classList.remove('approach-arrived'),900);
+        game.approachTarget=null
+      }
+      updateNear();
+      if(arrived&&game.autoInteractTarget===arrived){
+        game.autoInteractTarget=null;
+        setTimeout(()=>{
+          const t=collectTargets().find(x=>x.el===arrived);
+          if(t){game.near=t;interactTarget(t)}
+        },120)
+      }
+    }
     else{dx=tx/dist;dy=ty/dist}
   }
   if(dx&&dy&&!game.moveTarget){dx*=.707;dy*=.707}
@@ -144,7 +163,7 @@ function sceneChanged(){
   clearTimeout(game.sceneTimer);
   game.sceneTimer=setTimeout(()=>{
     game.active=true;root().classList.add('play-mode');
-    resetPlayer();buildPortals();updateNear();showTip();
+    game.autoInteractTarget=null;game.approachTarget=null;resetPlayer();buildPortals();updateNear();showTip();
     document.dispatchEvent(new CustomEvent('storybook:location',{detail:{name:$('#worldTitle')?.textContent||'',zone:root().dataset.zone||''}}));
   },55);
 }
@@ -199,7 +218,7 @@ function mount(){
     const target=e.target.closest('.world-hotspot,.world-npc,.play-portal');
     if(!target)return;
     e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
-    const pos=pctPos(target);if(pos){game.moveTarget=approachPoint(target,pos);game.approachTarget=target;target.classList.add('approach-target');showTip()}
+    const pos=pctPos(target);if(pos){game.moveTarget=approachPoint(target,pos);game.approachTarget=target;game.autoInteractTarget=target;target.classList.add('approach-target','auto-interact');showTip();const label=$('#playObjective');if(label)label.textContent='Walking to '+(target.querySelector('small')?.textContent||'your destination')+'…'}
   },true);
   st.addEventListener('pointerdown',e=>{
     if(!game.active||e.target.closest('button,.world-hotspot,.world-npc,.play-portal'))return;

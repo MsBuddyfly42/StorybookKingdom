@@ -208,3 +208,10 @@
 .world-npc.approach-arrived span{animation:approachGreeting .55s ease 1!important}
 @keyframes approachGreeting{45%{transform:translateY(-6px) rotate(3deg)}}
 .play-portal.approach-arrived .play-door{filter:brightness(1.18)}
+
+.auto-interact{filter:drop-shadow(0 0 15px #ffe39a)!important}
+.interaction-triggered{animation:interactionConfirm .42s ease 1!important}
+@keyframes interactionConfirm{45%{filter:brightness(1.28) drop-shadow(0 0 18px #fff0ad);transform:translate(-50%,-50%) scale(1.06)}}
+.world-npc.interaction-triggered{animation:npcInteractionConfirm .48s ease 1!important}
+@keyframes npcInteractionConfirm{45%{filter:brightness(1.18) drop-shadow(0 0 18px #ffdca2);transform:translate(-50%,-8px) scale(1.06)}}
+@media(prefers-reduced-motion:reduce){.interaction-triggered,.world-npc.interaction-triggered{animation:none!important}}
