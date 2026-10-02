@@ -1,0 +1,10 @@
+/* Royal Record achievements */
+.royal-record{width:min(720px,95vw)}
+#achievementCount{margin:0 0 12px;color:#dec9a4;font-size:.8rem}
+#achievementList{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#achievementList article{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:9px;padding:10px;border:1px solid #d8be7e3c;border-radius:12px;background:#2119278a}
+#achievementList article>span{font-size:1.7rem}#achievementList article strong{font-size:.82rem}#achievementList article p{margin:2px 0 0;font-size:.67rem;line-height:1.35;color:#d3bea0}#achievementList article>b{font-size:1.05rem;color:#9cd7a8}
+#achievementList article.locked{opacity:.5;filter:saturate(.5)}#achievementList article.locked>b{color:#ad9aa7}
+.achievement-toast{position:fixed;z-index:55000;right:18px;top:74px;display:grid;grid-template-columns:auto 1fr;gap:10px;max-width:min(370px,90vw);padding:11px 13px;border:1px solid #f0d28a99;border-radius:14px;background:#2b2038f2;color:#fff0cf;opacity:0;transform:translateY(-10px);pointer-events:none;transition:.25s;box-shadow:0 12px 36px #0008}.achievement-toast.show{opacity:1;transform:none}.achievement-toast>span{font-size:2rem}.achievement-toast small{display:block;font-size:.55rem;letter-spacing:.11em;color:#e4c16e}.achievement-toast strong{display:block;margin:1px 0}.achievement-toast p{margin:0;font-size:.7rem;color:#dec7a6}
+@media(max-width:600px){#achievementList{grid-template-columns:1fr}.achievement-toast{right:9px;top:62px}.royal-record{padding:13px}}
+@media(prefers-reduced-motion:reduce){.achievement-toast{transition:none}}
