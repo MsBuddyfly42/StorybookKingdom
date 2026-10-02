@@ -33,6 +33,9 @@ function furnitureRects(){
   return {l:r.l-pad,r:r.r+pad,t:r.t-pad,b:r.b+pad,el}
  }).filter(Boolean)
 }
+function npcRects(){
+ return $('.world-npc',stage()||document).map(el=>{const r=pctRect(el);return r?{...r,el}:null}).filter(Boolean)
+}
 function portalRects(){
  return $$('.play-portal',stage()||document).map(el=>{const r=pctRect(el);return r?{...r,el}:null}).filter(Boolean)
 }
@@ -49,6 +52,12 @@ function canStand(x,y){
  const b=bounds();
  if(x<b.l||x>b.r||y<b.t||y>b.b)return false;
  const near=nearestPortal(x,y);
+ for(const n of npcRects()){
+  if(inside(x,y,n,0.6)){
+   const cx=(n.l+n.r)/2,cy=(n.t+n.b)/2;
+   if(Math.hypot(cx-x,cy-y)<4.2)return false
+  }
+ }
  for(const r of furnitureRects()){
   if(inside(x,y,r,1.5)){
    if(near&&near.d<8)return true;

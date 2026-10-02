@@ -28,16 +28,37 @@ function noise(dur=.08,gain=.025){
  for(let i=0;i<len;i++)data[i]=(Math.random()*2-1)*(1-i/len);
  const src=ctx.createBufferSource(),g=ctx.createGain();src.buffer=buf;g.gain.value=gain;src.connect(g);g.connect(master);src.start()
 }
+function doorCreak(){
+ if(!prefs.audio||!ensureAudio())return;
+ noise(.22,.022);
+ const t=ctx.currentTime,o=ctx.createOscillator(),g=ctx.createGain();
+ o.type='sawtooth';o.frequency.setValueAtTime(145,t);o.frequency.exponentialRampToValueAtTime(72,t+.32);
+ g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.012,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.36);
+ o.connect(g);g.connect(master);o.start(t);o.stop(t+.38)
+}
 function cue(name){
  if(!prefs.audio)return;
  const cues={
-  interact:()=>chord([523,659],.16,.027),travel:()=>chord([392,523,659],.42,.026),arrive:()=>chord([659,784,988],.35,.024),
+  interact:()=>chord([523,659],.16,.027),travel:()=>doorCreak(),arrive:()=>chord([659,784,988],.35,.024),
   collect:()=>chord([880,1175],.24,.025),win:()=>chord([523,659,784,1047],.5,.027),buy:()=>chord([587,740,880],.3,.024),
   achievement:()=>chord([523,659,784,988],.7,.028),rest:()=>chord([330,392,494],.65,.018)
  };(cues[name]||cues.interact)()
 }
 function footstep(){
- const now=performance.now();if(now-lastStep<240)return;lastStep=now;noise(.055,.018);tone(90,.055,'triangle',.012)
+ const now=performance.now();if(now-lastStep<240)return;lastStep=now;
+ const r=root(),scene=r?.dataset.scene||r?.dataset.zone||'town',mode=r?.dataset.realism||'outdoor';
+ if(mode==='interior'){
+  const wood=/library|home|nursery|kitchen/.test(scene);
+  noise(wood?.045:.035,wood?.014:.01);tone(wood?115:82,.05,'triangle',wood?.011:.009)
+ }else if(mode==='underground'||scene==='underground'){
+  noise(.05,.012);tone(68,.07,'sine',.012);tone(145,.08,'triangle',.006,.025)
+ }else if(scene==='harbor'){
+  noise(.04,.014);tone(105,.045,'triangle',.008)
+ }else if(scene==='nature'||scene==='village'){
+  noise(.065,.009);tone(72,.05,'sine',.006)
+ }else{
+  noise(.05,.012);tone(92,.05,'triangle',.008)
+ }
 }
 function ambientChime(){
  if(!prefs.audio||document.hidden||root()?.hidden)return;
