@@ -25,7 +25,7 @@ function render(){
  const st=stage();if(!st)return;
  let layer=$('#realismFurniture',st);if(!layer){layer=document.createElement('div');layer.id='realismFurniture';layer.className='realism-furniture';st.appendChild(layer)}
  layer.replaceChildren();const items=layouts[scene()]||layouts.town;
- items.forEach(([icon,x,y,cls],i)=>{const e=document.createElement('span');e.textContent=icon;e.className='furniture '+cls;e.style.left=x+'%';e.style.top=y+'%';e.style.setProperty('--z',String(6+Math.round(y/10)));layer.appendChild(e)});
+ items.forEach(([icon,x,y,cls],i)=>{const e=document.createElement('span');e.textContent=icon;e.className='furniture '+cls;e.style.left=x+'%';e.style.top=y+'%';const z=(cls==='wall'||cls==='ceiling')?8:(12+Math.round(y));e.style.setProperty('--z',String(z));e.dataset.floorY=String(y);layer.appendChild(e)});
  lighting()
 }
 function lighting(){

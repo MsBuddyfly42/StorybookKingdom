@@ -11,3 +11,19 @@
 .play-portal .play-door{min-height:52px}.play-portal.door-back .play-door{height:62px;width:46px}.play-portal.door-front .play-door{height:58px;width:43px}
 @media(max-width:700px){.realism-furniture .furniture:nth-child(n+5){display:none}.realism-furniture .large{font-size:clamp(38px,10vw,58px)}.play-portal.door-back .play-door{height:52px;width:38px}}
 @media(prefers-reduced-motion:reduce){.realism-light{transition:none!important}}
+
+.realism-furniture .furniture:not(.wall):not(.ceiling):after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-8px;
+  width:70%;
+  height:10px;
+  border-radius:50%;
+  background:#0003;
+  filter:blur(4px);
+  transform:translateX(-50%);
+  z-index:-1;
+}
+.realism-furniture .wall,.realism-furniture .ceiling{pointer-events:none}
+#worldActor,.world-npc{transition:filter .15s linear}
