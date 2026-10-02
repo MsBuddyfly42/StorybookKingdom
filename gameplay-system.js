@@ -20,6 +20,54 @@ const quests=[
   {place:'Old Aqueduct',type:'object',text:'Search the Old Aqueduct for the symbol described by the scholar.'},
   {place:'Lantern Cavern',type:'object',text:'Investigate Lantern Cavern for the hidden bellflower seal.'},
   {place:'Bellflower Abbey',type:'npc',text:'Bring the secret back to someone at Bellflower Abbey.'}
+ ]},
+ {id:'masquerade',title:'The Midnight Masquerade',reward:7,steps:[
+  {place:'Rose & Ribbon Clothier',type:'npc',text:'Speak with someone at Rose & Ribbon Clothier about a mask ordered for the royal ball.'},
+  {place:'Grand Ballroom',type:'object',text:'Search the Grand Ballroom for the silver ribbon that fell from the missing mask.'},
+  {place:'Guest Wing',type:'npc',text:'Ask a guest in the Guest Wing whether they saw anyone carrying a silver mask.'},
+  {place:'Royal Hedge Maze',type:'object',text:'Follow the masquerade clue into the Royal Hedge Maze.'},
+  {place:'Grand Ballroom',type:'npc',text:'Return to the Grand Ballroom and reveal what happened before the first dance.'}
+ ]},
+ {id:'recipe',title:'The Baker’s Missing Recipe',reward:5,steps:[
+  {place:'Hearth & Honey Bakery',type:'npc',text:'Talk to the baker about the recipe that vanished before the morning bake.'},
+  {place:'Roseglass Market Lane',type:'object',text:'Search Roseglass Market Lane for a dropped ingredient list.'},
+  {place:'Palace Pantry',type:'object',text:'Look through the Palace Pantry for the unusual spice named in the list.'},
+  {place:'Royal Kitchens',type:'npc',text:'Ask someone in the Royal Kitchens who last borrowed the recipe.'},
+  {place:'Hearth & Honey Bakery',type:'npc',text:'Return to the bakery with the answer and help save the afternoon pastries.'}
+ ]},
+ {id:'harbor',title:'Lanterns of Moonharbor',reward:6,steps:[
+  {place:'Moonharbor Pier',type:'npc',text:'Ask the harbor crew why several pier lanterns went dark at once.'},
+  {place:'Moonharbor',type:'object',text:'Search Moonharbor for a trail of blue wax.'},
+  {place:'Lantern Bridge',type:'object',text:'Inspect Lantern Bridge for the missing lantern glass.'},
+  {place:'Azuremere Lighthouse',type:'npc',text:'Ask the lighthouse keeper about a ship that passed before dawn.'},
+  {place:'Moonharbor Pier',type:'object',text:'Return to the pier and relight the final lantern.'}
+ ]},
+ {id:'tower',title:'The Star Map of Old Moon Tower',reward:7,steps:[
+  {place:'Old Moon Tower',type:'object',text:'Investigate the star-shaped window in Old Moon Tower.'},
+  {place:'Royal Library',type:'npc',text:'Ask someone in the Royal Library about the missing constellation map.'},
+  {place:'West Tower',type:'object',text:'Search the West Tower for a matching brass star marker.'},
+  {place:'Nocturne Hollow',type:'npc',text:'Find a traveler in Nocturne Hollow who recognizes the old star symbol.'},
+  {place:'Old Moon Tower',type:'object',text:'Return to Old Moon Tower and complete the forgotten star map.'}
+ ]},
+ {id:'harvest',title:'The Village Harvest Festival',reward:5,steps:[
+  {place:'Barleycross',type:'npc',text:'Ask the villagers in Barleycross what the harvest festival still needs.'},
+  {place:'Red Orchard',type:'object',text:'Gather a clue to the missing apple cart in Red Orchard.'},
+  {place:'Pinehollow',type:'npc',text:'Ask someone in Pinehollow about the musician who promised to perform.'},
+  {place:'Festival Green',type:'object',text:'Help prepare Festival Green before the celebration begins.'},
+  {place:'Barleycross',type:'npc',text:'Return to Barleycross and join the villagers as the festival opens.'}
+ ]},
+ {id:'below',title:'The Key Beneath the Castle',reward:8,steps:[
+  {place:'Servants’ Stair Belowstairs',type:'object',text:'Inspect the servants’ stair for the old key mark scratched into the stone.'},
+  {place:'Sealed Store Cellars',type:'object',text:'Search the Sealed Store Cellars for the lock that matches the mark.'},
+  {place:'Forgotten Foundation Hall',type:'npc',text:'Ask the lantern keeper what used to stand in the Forgotten Foundation Hall.'},
+  {place:'River Gate Tunnel',type:'object',text:'Follow the old foundation clue through the River Gate Tunnel.'},
+  {place:'Hidden Passage Network',type:'object',text:'Use what you learned to uncover a forgotten door in the Hidden Passage Network.'}
+ ]},
+ {id:'quiet',title:'A Lovely Day in the Kingdom',reward:4,steps:[
+  {place:'Queen’s Gardens',type:'npc',text:'Spend a little time talking with someone in the Queen’s Gardens.'},
+  {place:'The Crooked Bookmark',type:'object',text:'Browse something interesting at The Crooked Bookmark.'},
+  {place:'Moonharbor Inn',type:'npc',text:'Stop by Moonharbor Inn and share a quiet conversation.'},
+  {place:'Royal Rose Arbor',type:'object',text:'Finish the day with a peaceful discovery at the Royal Rose Arbor.'}
  ]}
 ];
 function currentQuest(){return quests[state.quest%quests.length]}
@@ -110,5 +158,10 @@ function mount(){
  render();return true
 }
 function wait(){if(mount())return;const mo=new MutationObserver(()=>{if(mount())mo.disconnect()});mo.observe(document.body,{childList:true,subtree:true})}
+window.StorybookGame={
+ quests:()=>quests.map(q=>({id:q.id,title:q.title,reward:q.reward,steps:q.steps.map(s=>({...s}))})),
+ state:()=>({...state,completed:[...(state.completed||[])]}),
+ selectQuest:id=>{const i=quests.findIndex(q=>q.id===id);if(i>=0){state.quest=i;state.step=0;save();render();flash('New quest: '+quests[i].title);return true}return false}
+};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wait);else wait();
 })();
