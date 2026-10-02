@@ -1,0 +1,6 @@
+/* NPC room-use behaviors */
+.world-npc.npc-room-walk span{animation:npcRoomWalk .38s ease-in-out infinite alternate!important}
+@keyframes npcRoomWalk{to{transform:translateY(-4px) rotate(2deg)}}
+.world-npc.npc-room-use span{animation:npcRoomUse 1.4s ease-in-out infinite alternate!important}
+@keyframes npcRoomUse{to{transform:rotate(-3deg) translateY(1px)}}
+@media(prefers-reduced-motion:reduce){.world-npc.npc-room-walk span,.world-npc.npc-room-use span{animation:none!important}}
