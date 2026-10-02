@@ -64,3 +64,22 @@ The live-world interaction layer now includes:
 - Gentle generated ambience while cinematic mode is open
 
 All original Storybook Kingdom systems remain in place.
+
+
+## Final Release — October 2026
+
+Storybook Kingdom has completed its base-game build. The final release includes:
+- movement-based keyboard and mobile controls
+- 72 connected explorable locations
+- distinct interiors and environmental themes
+- quests, route guidance, collectibles, achievements and save state
+- relationship memory and NPC routines
+- day/night and dynamic weather
+- location mini-games, kingdom coins and shops
+- equipable traveler cosmetics
+- decorateable homes and home-base travel
+- cinematic doorway transitions
+- optional generated sound effects and ambience
+- responsive mobile/desktop UI and reduced-motion support
+
+Future changes should be treated as expansions or content packs rather than required base-game systems.
