@@ -1,0 +1,12 @@
+/* Quest book */
+.quest-book-panel{width:min(780px,95vw)}
+.quest-book-summary{margin:0 0 12px;color:#e3cfa9;font-size:.82rem}
+#questBookList{display:grid;gap:12px}
+.quest-card{padding:13px;border:1px solid #d8bd7a44;border-radius:14px;background:#21182791}
+.quest-card.active{border-color:#f1d58c;box-shadow:0 0 0 2px #f1d58c22}
+.quest-card.completed{border-color:#92c59b66;background:#2130267d}
+.quest-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.quest-card-head small{display:block;font-size:.58rem;letter-spacing:.11em;color:#dcbf7b}.quest-card.completed .quest-card-head small{color:#a9d6b1}.quest-card-head h3{margin:2px 0 0;font-size:1.02rem}.quest-card-head>span{white-space:nowrap;font-weight:900;color:#ffe4a2}
+.quest-card ol{margin:11px 0 12px;padding-left:22px;display:grid;gap:8px}.quest-card li{padding-left:3px}.quest-card li strong{display:block;font-size:.78rem;color:#f4dfb6}.quest-card li span{display:block;margin-top:1px;font-size:.72rem;line-height:1.4;color:#d9c6aa}
+.quest-start{min-height:42px;border:1px solid #e1c68a77;border-radius:10px;background:#654b72;color:white;padding:8px 12px;font-weight:850}
+.quest-card.active .quest-start{background:#8a6541}.quest-card.completed .quest-start{background:#48634c}
+@media(max-width:600px){.quest-card{padding:11px}.quest-card-head{display:grid;grid-template-columns:1fr auto}.quest-card ol{padding-left:18px}.quest-start{width:100%}}
