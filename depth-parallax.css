@@ -1,0 +1,13 @@
+/* Subtle spatial depth/parallax */
+#worldStage .world-sky,#worldStage .realism-backwall,#worldStage .window-views{translate:var(--far-x,0) var(--far-y,0)}
+#worldStage .world-trees,#worldStage .realism-facade,#worldStage .scene-director{translate:var(--mid-x,0) var(--mid-y,0)}
+#worldStage .world-sky,#worldStage .realism-backwall,#worldStage .window-views,#worldStage .world-trees,#worldStage .realism-facade,#worldStage .scene-director{transition:translate .12s linear}
+#livingWorld.warm-light #worldStage:before{content:"";position:absolute;z-index:10;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 62%,#ffb25a26,transparent 29%),radial-gradient(circle at 72% 50%,#ffd58a12,transparent 28%);mix-blend-mode:screen;animation:warmLight 2.2s ease-in-out infinite alternate}
+#livingWorld.cool-light #worldStage:before{content:"";position:absolute;z-index:10;inset:0;pointer-events:none;background:radial-gradient(circle at 55% 25%,#a5baff14,transparent 35%),linear-gradient(#55639510,#1f274018);mix-blend-mode:screen}
+@keyframes warmLight{to{opacity:.72;filter:brightness(1.08)}}
+#livingWorld[data-scene="kitchen"] #worldStage:before{background:radial-gradient(circle at 15% 58%,#ff8b3d36,transparent 30%),radial-gradient(circle at 50% 48%,#ffc46b14,transparent 34%)}
+#livingWorld[data-scene="chapel"] #worldStage:before{background:linear-gradient(118deg,#b9dcff18 0 23%,transparent 24% 100%),linear-gradient(72deg,#ffb8cf12 0 17%,transparent 18% 100%)}
+@media(prefers-reduced-motion:reduce){
+ #worldStage .world-sky,#worldStage .realism-backwall,#worldStage .window-views,#worldStage .world-trees,#worldStage .realism-facade,#worldStage .scene-director{translate:0 0!important;transition:none!important}
+ #livingWorld.warm-light #worldStage:before{animation:none!important}
+}
