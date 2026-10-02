@@ -36,3 +36,24 @@
 @media(prefers-reduced-motion:reduce){
  #worldActor.crossing-threshold,#worldActor.emerging-room{animation:none!important;opacity:1!important;translate:0 0!important}
 }
+
+#worldActor.settling-room{
+  animation:settleIntoRoom .5s cubic-bezier(.22,.72,.28,1) both!important;
+}
+@keyframes settleIntoRoom{
+  from{translate:0 0}
+  58%{translate:var(--settle-x,0px) var(--settle-y,-10px)}
+  to{translate:0 0}
+}
+.play-portal.door-after-entry .door-panel.a{transform:perspective(90px) rotateY(-52deg)}
+.play-portal.door-after-entry .door-panel.b{transform:perspective(90px) rotateY(52deg)}
+.play-portal.door-after-entry{animation:doorSettle 1.25s ease both}
+@keyframes doorSettle{
+  0%{filter:brightness(1.12)}
+  60%{filter:brightness(1.04)}
+  100%{filter:none}
+}
+@media(prefers-reduced-motion:reduce){
+ #worldActor.settling-room,.play-portal.door-after-entry{animation:none!important}
+ .play-portal.door-after-entry .door-panel.a,.play-portal.door-after-entry .door-panel.b{transform:none!important}
+}

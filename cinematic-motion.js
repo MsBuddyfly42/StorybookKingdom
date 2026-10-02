@@ -37,13 +37,28 @@ function arrive(detail){
  if(a){
   a.classList.remove('crossing-threshold');
   const x=parseFloat(a.style.left)||50,y=parseFloat(a.style.top)||78;
-  let ex=0,ey=18;
-  if(x<22){ex=-34;ey=0}else if(x>78){ex=34;ey=0}else if(y<45){ey=-30}else{ey=30}
+  let ex=0,ey=18,stepX=0,stepY=-10;
+  if(x<22){ex=-34;ey=0;stepX=12;stepY=0}
+  else if(x>78){ex=34;ey=0;stepX=-12;stepY=0}
+  else if(y<45){ey=-30;stepY=12}
+  else{ey=30;stepY=-12}
   a.style.setProperty('--enter-x',ex+'px');a.style.setProperty('--enter-y',ey+'px');
+  a.style.setProperty('--settle-x',stepX+'px');a.style.setProperty('--settle-y',stepY+'px');
   a.classList.add('emerging-room');
-  setTimeout(()=>a.classList.remove('emerging-room'),900)
+  setTimeout(()=>{a.classList.remove('emerging-room');a.classList.add('settling-room');setTimeout(()=>a.classList.remove('settling-room'),520)},760)
  }
- clearTimeout(arriveTimer);arriveTimer=setTimeout(()=>{o.classList.remove('show');setTimeout(()=>st.classList.remove('camera-arrive'),650)},320)
+ clearTimeout(arriveTimer);arriveTimer=setTimeout(()=>{
+  o.classList.remove('show');
+  const entrance=[...st.querySelectorAll('.play-portal')].sort((p,q)=>{
+    const pr=p.getBoundingClientRect(),qr=q.getBoundingClientRect(),ar=a?.getBoundingClientRect();
+    if(!ar)return 0;
+    const pc=Math.hypot(pr.left+pr.width/2-(ar.left+ar.width/2),pr.top+pr.height/2-(ar.top+ar.height/2));
+    const qc=Math.hypot(qr.left+qr.width/2-(ar.left+ar.width/2),qr.top+qr.height/2-(ar.top+ar.height/2));
+    return pc-qc
+  })[0];
+  if(entrance){entrance.classList.add('door-after-entry');setTimeout(()=>entrance.classList.remove('door-after-entry'),1300)}
+  setTimeout(()=>st.classList.remove('camera-arrive'),700)
+ },340)
 }
 function mount(){
  if(!stage())return false;
