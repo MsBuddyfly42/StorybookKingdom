@@ -102,7 +102,7 @@ function addInventory(){
 function mount(){
  const root=$('#livingWorld');if(!root)return false;
  overlay();document.addEventListener('storybook:location',()=>setTimeout(()=>{station();renderWallet()},100));
- new MutationObserver(()=>{station();renderWallet();if($('#shellInventoryBody'))addInventory()}).observe(root,{subtree:true,childList:true});
+ document.addEventListener('click',e=>{if(e.target.closest('#shellInventoryBtn'))setTimeout(()=>{renderWallet();addInventory()},80)});
  station();renderWallet();return true
 }
 function wait(){if(mount())return;const mo=new MutationObserver(()=>{if(mount())mo.disconnect()});mo.observe(document.body,{childList:true,subtree:true})}

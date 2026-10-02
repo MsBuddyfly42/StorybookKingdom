@@ -75,7 +75,7 @@ function mount(){
  const root=$('#livingWorld');if(!root)return false;
  overlay();document.addEventListener('storybook:location',()=>setTimeout(()=>{homeStation();renderDecor();addMenuButton()},120));
  document.addEventListener('storybook:purchase',()=>{if(atHome())renderDecor()});
- new MutationObserver(()=>{homeStation();renderDecor();addMenuButton()}).observe(root,{subtree:true,childList:true});
+ document.addEventListener('click',e=>{if(e.target.closest('#shellPauseBtn'))setTimeout(addMenuButton,60)});
  homeStation();renderDecor();addMenuButton();return true
 }
 function wait(){if(mount())return;const mo=new MutationObserver(()=>{if(mount())mo.disconnect()});mo.observe(document.body,{childList:true,subtree:true})}

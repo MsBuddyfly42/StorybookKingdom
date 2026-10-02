@@ -83,7 +83,7 @@ function mount(){
  const root=$('#livingWorld');if(!root)return false;
  document.addEventListener('storybook:location',()=>setTimeout(()=>{station();applyEquipped()},120));
  document.addEventListener('storybook:activity-win',()=>{if(!$('#shopOverlay')?.hidden)renderShop()});
- new MutationObserver(()=>{station();applyEquipped();if($('#shellInventoryBody'))renderInventory()}).observe(root,{subtree:true,childList:true});
+ document.addEventListener('click',e=>{if(e.target.closest('#shellInventoryBtn'))setTimeout(renderInventory,80)});
  applyEquipped();station();return true
 }
 function wait(){if(mount())return;const mo=new MutationObserver(()=>{if(mount())mo.disconnect()});mo.observe(document.body,{childList:true,subtree:true})}

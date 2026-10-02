@@ -66,7 +66,7 @@ function mount(){
  const root=$('#livingWorld');if(!root)return false;
  document.addEventListener('storybook:interact',e=>record(e.detail));
  document.addEventListener('storybook:location',()=>setTimeout(updateNpcBadges,130));
- new MutationObserver(()=>{updateNpcBadges();if($('#shellInventoryBody')){panel();renderList()}}).observe(root,{subtree:true,childList:true});
+ document.addEventListener('click',e=>{if(e.target.closest('#shellInventoryBtn'))setTimeout(()=>{panel();renderList()},80)});
  updateNpcBadges();return true
 }
 function wait(){if(mount())return;const mo=new MutationObserver(()=>{if(mount())mo.disconnect()});mo.observe(document.body,{childList:true,subtree:true})}
