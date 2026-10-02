@@ -27,6 +27,19 @@ function distance(a,b){
   const dx=(a.x-b.x)*1.35,dy=(a.y-b.y);
   return Math.hypot(dx,dy);
 }
+function approachPoint(target,pos){
+ const here={x:game.x,y:game.y};
+ if(target.classList.contains('play-portal')){
+  if(target.classList.contains('door-left'))return {x:clamp(pos.x+8,5,95),y:pos.y};
+  if(target.classList.contains('door-right'))return {x:clamp(pos.x-8,5,95),y:pos.y};
+  if(target.classList.contains('door-back'))return {x:pos.x,y:clamp(pos.y+9,18,88)};
+  if(target.classList.contains('door-front'))return {x:pos.x,y:clamp(pos.y-9,18,88)};
+  return {x:pos.x,y:clamp(pos.y+7,18,88)}
+ }
+ const dx=here.x-pos.x,dy=here.y-pos.y,len=Math.hypot(dx,dy)||1;
+ const gap=target.classList.contains('world-npc')?8:6;
+ return {x:clamp(pos.x+dx/len*gap,5,95),y:clamp(pos.y+dy/len*gap,18,88)}
+}
 function targetLabel(t){
   if(!t)return '';
   if(t.type==='portal')return 'Travel to '+t.label;
@@ -72,7 +85,7 @@ function interact(){
 }
 function move(dx,dy,dt){
   if(!game.active)return;
-  if(dx||dy)game.moveTarget=null;
+  if(dx||dy){game.moveTarget=null;if(game.approachTarget){game.approachTarget.classList.remove('approach-target');game.approachTarget=null}}
   const boost=game.keys.has('shift')?1.65:1;
   const scale=game.speed*boost*dt;
   if(dx){game.x=clamp(game.x+dx*scale,5,95);game.facing=dx<0?'left':'right'}
@@ -90,7 +103,7 @@ function frame(ts){
   if(game.keys.has('arrowdown')||game.keys.has('s'))dy++;
   if(!dx&&!dy&&game.moveTarget){
     const tx=game.moveTarget.x-game.x,ty=game.moveTarget.y-game.y,dist=Math.hypot(tx,ty);
-    if(dist<1.2){game.moveTarget=null}
+    if(dist<1.2){game.moveTarget=null;if(game.approachTarget){game.approachTarget.classList.remove('approach-target');game.approachTarget.classList.add('approach-arrived');setTimeout(()=>game.approachTarget?.classList.remove('approach-arrived'),900);game.approachTarget=null}updateNear()}
     else{dx=tx/dist;dy=ty/dist}
   }
   if(dx&&dy&&!game.moveTarget){dx*=.707;dy*=.707}
@@ -186,7 +199,7 @@ function mount(){
     const target=e.target.closest('.world-hotspot,.world-npc,.play-portal');
     if(!target)return;
     e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
-    const pos=pctPos(target);if(pos){game.moveTarget={x:pos.x,y:clamp(pos.y+5,18,88)};showTip()}
+    const pos=pctPos(target);if(pos){game.moveTarget=approachPoint(target,pos);game.approachTarget=target;target.classList.add('approach-target');showTip()}
   },true);
   st.addEventListener('pointerdown',e=>{
     if(!game.active||e.target.closest('button,.world-hotspot,.world-npc,.play-portal'))return;

@@ -202,3 +202,9 @@
   #livingWorld.play-mode .play-near,
   .play-action-mobile.ready{animation:none!important}
 }
+
+.approach-target{filter:drop-shadow(0 0 12px #ffe49b)!important}
+.approach-arrived{filter:drop-shadow(0 0 18px #fff0b0)!important}
+.world-npc.approach-arrived span{animation:approachGreeting .55s ease 1!important}
+@keyframes approachGreeting{45%{transform:translateY(-6px) rotate(3deg)}}
+.play-portal.approach-arrived .play-door{filter:brightness(1.18)}
