@@ -1,0 +1,16 @@
+/* Live room windows */
+.window-views{position:absolute;inset:0;z-index:4;pointer-events:none}
+.live-window{position:absolute;top:21%;width:12%;height:30%;border:7px solid #4b3943;border-radius:45% 45% 5px 5px;background:#333;overflow:hidden;box-shadow:0 8px 12px #0005,inset 0 0 8px #0008}.live-window.left{left:13%}.live-window.right{right:13%}
+.window-sky{position:absolute;inset:0;background:linear-gradient(#8ec0e4,#efd0ac 78%);overflow:hidden}.window-views[data-time="morning"] .window-sky{background:linear-gradient(#9bcbe9,#ffe2b0 80%)}.window-views[data-time="evening"] .window-sky{background:linear-gradient(#5a5687,#d9858f 75%,#e6ad72)}.window-views[data-time="night"] .window-sky{background:linear-gradient(#141936,#3d3e67)}
+.window-orb{position:absolute;right:15%;top:14%;width:22px;height:22px;border-radius:50%;background:#ffe8a1;box-shadow:0 0 18px #ffe8a1}.window-views[data-time="night"] .window-orb{background:#e8e9ff;box-shadow:0 0 14px #dfe4ff}
+.window-frame:before,.window-frame:after{content:"";position:absolute;background:#4b3943;z-index:3}.window-frame:before{left:50%;top:0;bottom:0;width:4px;transform:translateX(-50%)}.window-frame:after{left:0;right:0;top:48%;height:4px}
+.window-sill{position:absolute;left:-6px;right:-6px;bottom:-2px;height:8px;background:#5b4549;z-index:5}
+.window-sky .cloud{position:absolute;width:28px;height:10px;border-radius:999px;background:#fff9dd88;filter:blur(1px);animation:windowCloud 8s linear infinite}.window-sky .cloud.c1{left:6%;top:33%}.window-sky .cloud.c2{left:54%;top:57%;animation-duration:11s}@keyframes windowCloud{50%{transform:translateX(12px)}}
+.window-weather{position:absolute;inset:0;z-index:2}.window-weather span{position:absolute;top:-15%;color:#dff1ff;font-size:.7rem;animation:windowFall 2.8s linear infinite}@keyframes windowFall{to{transform:translateY(180px)}}
+.window-views[data-weather="mist"] .window-sky{filter:saturate(.65) brightness(.9)}.window-views[data-weather="mist"] .window-weather span{font-size:1.1rem;opacity:.42;animation:windowMist 3.5s ease-in-out infinite alternate}@keyframes windowMist{to{transform:translateX(22px);opacity:.18}}
+.window-views:after{content:"";position:absolute;left:17%;top:45%;width:24%;height:35%;background:linear-gradient(120deg,#fff0b02e,transparent);clip-path:polygon(0 0,100% 30%,68% 100%,0 70%);filter:blur(2px)}
+.window-views[data-time="night"]:after{background:linear-gradient(120deg,#bfc9ff1a,transparent)}
+#livingWorld[data-scene="chapel"] .live-window{left:44%;width:12%;height:34%}#livingWorld[data-scene="chapel"] .window-views:after{left:42%;width:28%}
+#livingWorld[data-scene="tower"] .live-window{top:16%;height:38%}
+@media(max-width:700px){.live-window{width:15%;height:26%;border-width:5px}.live-window.left{left:10%}.live-window.right{right:10%}.window-views:after{display:none}}
+@media(prefers-reduced-motion:reduce){.window-sky .cloud,.window-weather span{animation:none!important}}
