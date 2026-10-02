@@ -1,0 +1,204 @@
+/* Storybook Kingdom — playable world control layer */
+#livingWorld.play-mode #worldStage{
+  cursor:default;
+  user-select:none;
+  touch-action:none;
+  min-height:390px;
+}
+#livingWorld.play-mode #worldActor{
+  left:50%;
+  top:76%;
+  right:auto;
+  bottom:auto;
+  transform:translate(-50%,-50%);
+  transition:none!important;
+  will-change:left,top,transform;
+  z-index:40;
+  pointer-events:none;
+}
+#livingWorld.play-mode #worldActor[data-facing="left"]{transform:translate(-50%,-50%) scaleX(-1)}
+#livingWorld.play-mode #worldActor small{transform:scaleX(1)}
+#livingWorld.play-mode #worldActor[data-facing="left"] small{transform:scaleX(-1)}
+#livingWorld.play-mode #worldActor.is-moving{animation:playableBob .24s ease-in-out infinite alternate}
+@keyframes playableBob{
+  to{margin-top:-5px;filter:drop-shadow(0 11px 6px #0008)}
+}
+#livingWorld.play-mode .world-hotspot,
+#livingWorld.play-mode .world-npc{
+  cursor:default;
+}
+#livingWorld.play-mode .world-hotspot:not(.play-near),
+#livingWorld.play-mode .world-npc:not(.play-near){
+  opacity:.88;
+}
+#livingWorld.play-mode .play-near{
+  filter:drop-shadow(0 0 14px #fff2a8)!important;
+  animation:playNearPulse .8s ease-in-out infinite alternate!important;
+}
+@keyframes playNearPulse{
+  to{transform:translate(-50%,-50%) scale(1.08)}
+}
+#livingWorld.play-mode .world-npc.play-near{
+  animation:playNpcPulse .8s ease-in-out infinite alternate!important;
+}
+@keyframes playNpcPulse{
+  to{transform:translate(-50%,-7px) scale(1.06)}
+}
+.play-portals{
+  position:absolute;
+  inset:0;
+  z-index:14;
+  pointer-events:none;
+}
+.play-portal{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  display:grid;
+  place-items:center;
+  min-width:72px;
+  min-height:68px;
+  padding:6px 9px;
+  border:2px solid #f1d18a;
+  border-radius:18px 18px 8px 8px;
+  background:linear-gradient(180deg,#5f466fdd,#2f263bdd);
+  color:#fff8df;
+  box-shadow:0 0 18px #ffe69c55,inset 0 0 0 2px #ffffff18;
+  pointer-events:none;
+}
+.play-portal .play-door{font-size:2rem;line-height:1}
+.play-portal small{
+  max-width:112px;
+  font-size:.64rem;
+  font-weight:850;
+  line-height:1.1;
+  text-align:center;
+}
+.play-portal.play-near{
+  box-shadow:0 0 28px #fff0a1,0 0 0 5px #fff2b822;
+  transform:translate(-50%,-50%) scale(1.07);
+}
+.play-hud{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px 14px;
+  align-items:center;
+  margin:10px 0 8px;
+  padding:10px 12px;
+  border:1px solid #e0c68778;
+  border-radius:15px;
+  background:linear-gradient(115deg,#2d2238ef,#463252e8);
+  color:#fff4d9;
+}
+.play-hud strong{font-size:.9rem}
+.play-hud .play-help{font-size:.73rem;opacity:.85}
+.play-hud .play-objective{
+  grid-column:1/-1;
+  min-height:20px;
+  font-size:.82rem;
+  color:#ffe4a6;
+}
+.play-interact{
+  min-height:46px;
+  padding:9px 15px;
+  border:2px solid #f4d78e;
+  border-radius:13px;
+  background:linear-gradient(#a66e46,#6f4937);
+  color:white;
+  font-weight:950;
+  letter-spacing:.02em;
+  box-shadow:0 5px 15px #0004;
+}
+.play-interact:disabled{opacity:.48;filter:grayscale(.4)}
+.play-controls{
+  position:absolute;
+  left:12px;
+  bottom:12px;
+  z-index:60;
+  display:grid;
+  grid-template-columns:48px 48px 48px;
+  grid-template-rows:48px 48px;
+  gap:6px;
+  pointer-events:auto;
+}
+.play-controls button{
+  border:1px solid #f2dbac99;
+  border-radius:13px;
+  background:#2d2439dd;
+  color:white;
+  font-size:1.28rem;
+  font-weight:900;
+  backdrop-filter:blur(7px);
+  box-shadow:0 4px 12px #0005;
+  touch-action:none;
+}
+.play-controls .up{grid-column:2;grid-row:1}
+.play-controls .left{grid-column:1;grid-row:2}
+.play-controls .down{grid-column:2;grid-row:2}
+.play-controls .right{grid-column:3;grid-row:2}
+.play-action-mobile{
+  position:absolute;
+  right:14px;
+  bottom:18px;
+  z-index:60;
+  width:78px;
+  height:78px;
+  border:3px solid #ffe9a7;
+  border-radius:50%;
+  background:linear-gradient(145deg,#b87a49,#744938);
+  color:white;
+  font-size:.72rem;
+  font-weight:950;
+  box-shadow:0 7px 18px #0006;
+  touch-action:manipulation;
+}
+.play-action-mobile.ready{animation:playActionReady .7s ease-in-out infinite alternate}
+@keyframes playActionReady{to{box-shadow:0 0 22px #ffe18b,0 7px 18px #0006;transform:scale(1.05)}}
+.play-instructions{
+  position:absolute;
+  left:50%;
+  top:9%;
+  z-index:65;
+  transform:translateX(-50%);
+  max-width:min(90%,520px);
+  padding:9px 14px;
+  border-radius:999px;
+  background:#241b31e8;
+  color:#fff4d9;
+  border:1px solid #f1d59588;
+  font-size:.8rem;
+  font-weight:800;
+  text-align:center;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .25s;
+}
+.play-instructions.show{opacity:1}
+#livingWorld.play-mode .world-roads{
+  opacity:.78;
+}
+#livingWorld.play-mode .world-roads h2::after{
+  content:" — portals are also inside the scene";
+  font-size:.7rem;
+  font-weight:500;
+  opacity:.75;
+}
+@media(min-width:901px){
+  .play-controls,.play-action-mobile{opacity:.38}
+  .play-controls:hover,.play-action-mobile:hover{opacity:1}
+}
+@media(max-width:700px){
+  #livingWorld.play-mode #worldStage{min-height:430px;height:58svh}
+  .play-hud{grid-template-columns:1fr}
+  .play-hud .play-interact{width:100%}
+  .play-hud .play-help{font-size:.69rem}
+  .play-controls{left:8px;bottom:8px;grid-template-columns:52px 52px 52px;grid-template-rows:52px 52px}
+  .play-action-mobile{right:9px;bottom:11px;width:82px;height:82px}
+  .play-portal{min-width:58px;min-height:58px;padding:4px 6px}
+  .play-portal small{max-width:82px;font-size:.56rem}
+  .play-portal .play-door{font-size:1.65rem}
+}
+@media(prefers-reduced-motion:reduce){
+  #livingWorld.play-mode #worldActor.is-moving,
+  #livingWorld.play-mode .play-near,
+  .play-action-mobile.ready{animation:none!important}
+}
