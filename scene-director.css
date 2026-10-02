@@ -1,0 +1,84 @@
+/* Distinct visual environments for the playable kingdom */
+.scene-director{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden}
+.scene-director span{position:absolute;transform:translate(-50%,-50%);font-size:clamp(28px,4.8vw,62px);filter:drop-shadow(0 8px 8px #0007);animation:sceneIdle 3.2s ease-in-out infinite alternate}
+@keyframes sceneIdle{to{transform:translate(-50%,-56%) rotate(2deg)}}
+#livingWorld[data-scene="throne"] #worldStage,
+#livingWorld[data-scene="library"] #worldStage,
+#livingWorld[data-scene="kitchen"] #worldStage,
+#livingWorld[data-scene="ballroom"] #worldStage,
+#livingWorld[data-scene="chapel"] #worldStage,
+#livingWorld[data-scene="nursery"] #worldStage,
+#livingWorld[data-scene="home"] #worldStage,
+#livingWorld[data-scene="hall"] #worldStage,
+#livingWorld[data-scene="tower"] #worldStage,
+#livingWorld[data-scene="academy"] #worldStage{
+ background:linear-gradient(#49394f 0 12%,#826b72 12% 69%,#5a443b 69% 100%);
+}
+#livingWorld[data-scene="throne"] .world-sky,
+#livingWorld[data-scene="library"] .world-sky,
+#livingWorld[data-scene="kitchen"] .world-sky,
+#livingWorld[data-scene="ballroom"] .world-sky,
+#livingWorld[data-scene="chapel"] .world-sky,
+#livingWorld[data-scene="nursery"] .world-sky,
+#livingWorld[data-scene="home"] .world-sky,
+#livingWorld[data-scene="hall"] .world-sky,
+#livingWorld[data-scene="academy"] .world-sky{display:none}
+#livingWorld[data-scene="throne"] .world-trees,
+#livingWorld[data-scene="library"] .world-trees,
+#livingWorld[data-scene="kitchen"] .world-trees,
+#livingWorld[data-scene="ballroom"] .world-trees,
+#livingWorld[data-scene="chapel"] .world-trees,
+#livingWorld[data-scene="nursery"] .world-trees,
+#livingWorld[data-scene="home"] .world-trees,
+#livingWorld[data-scene="hall"] .world-trees,
+#livingWorld[data-scene="academy"] .world-trees{display:none}
+#livingWorld[data-scene="throne"] .world-building,
+#livingWorld[data-scene="library"] .world-building,
+#livingWorld[data-scene="kitchen"] .world-building,
+#livingWorld[data-scene="ballroom"] .world-building,
+#livingWorld[data-scene="chapel"] .world-building,
+#livingWorld[data-scene="nursery"] .world-building,
+#livingWorld[data-scene="home"] .world-building,
+#livingWorld[data-scene="hall"] .world-building,
+#livingWorld[data-scene="academy"] .world-building{
+ inset:5% 4% 17%;width:auto;height:auto;bottom:17%;left:4%;
+ border-radius:18px;background:linear-gradient(90deg,#5f4b58,#9a817f 12%,#775f68 50%,#9a817f 88%,#5f4b58);
+ border:7px solid #5b4653;opacity:1;transform:none
+}
+#livingWorld[data-scene="throne"] .world-roof,
+#livingWorld[data-scene="library"] .world-roof,
+#livingWorld[data-scene="kitchen"] .world-roof,
+#livingWorld[data-scene="ballroom"] .world-roof,
+#livingWorld[data-scene="chapel"] .world-roof,
+#livingWorld[data-scene="nursery"] .world-roof,
+#livingWorld[data-scene="home"] .world-roof,
+#livingWorld[data-scene="hall"] .world-roof,
+#livingWorld[data-scene="academy"] .world-roof{display:none}
+#livingWorld[data-scene="throne"] .world-gateway{width:18%;height:45%;left:41%;bottom:3%;border-radius:70px 70px 8px 8px;background:linear-gradient(#8f6b34,#d7b467);box-shadow:0 0 0 9px #6e4a40,0 0 30px #f4d68a55}
+#livingWorld[data-scene="throne"] .world-windows{font-size:2.3rem;top:20%;color:#f7d58f}
+#livingWorld[data-scene="library"] .world-building{background:repeating-linear-gradient(90deg,#442f32 0 11%,#6c493d 11% 13%,#3d2d33 13% 24%)}
+#livingWorld[data-scene="library"] .world-windows{color:#f1c978;font-size:2.5rem}
+#livingWorld[data-scene="kitchen"] .world-building{background:linear-gradient(90deg,#70554a,#a37e66,#6c5148)}
+#livingWorld[data-scene="kitchen"] #worldStage:after{content:"🔥";position:absolute;z-index:4;left:8%;bottom:19%;font-size:5rem;filter:drop-shadow(0 0 18px #ff9c55)}
+#livingWorld[data-scene="ballroom"] .world-building{background:linear-gradient(90deg,#7d5d70,#d2b8ae 20%,#84647a 50%,#d2b8ae 80%,#7d5d70)}
+#livingWorld[data-scene="ballroom"] #worldStage:after{content:"✨   ✦   ✨";white-space:pre;position:absolute;z-index:4;left:50%;top:8%;transform:translateX(-50%);font-size:2.7rem;color:#ffe6a0;letter-spacing:2vw;filter:drop-shadow(0 0 10px #ffe99a)}
+#livingWorld[data-scene="chapel"] .world-building{background:linear-gradient(90deg,#514c5d,#8a7a88,#524b5b)}
+#livingWorld[data-scene="chapel"] #worldStage:after{content:"◈  ✦  ◈";position:absolute;z-index:4;left:50%;top:16%;transform:translateX(-50%);font-size:3.5rem;color:#a9d8ec;text-shadow:0 0 18px #d7efff}
+#livingWorld[data-scene="nursery"] .world-building{background:linear-gradient(90deg,#806772,#c29aa6,#8b707d)}
+#livingWorld[data-scene="home"] .world-building{background:linear-gradient(90deg,#72584d,#b98d73,#795f54)}
+#livingWorld[data-scene="hall"] .world-building{background:linear-gradient(90deg,#5c4a58,#90747e,#604d5c)}
+#livingWorld[data-scene="tower"] #worldStage{background:linear-gradient(#252543,#55516d 62%,#4b3d48)}
+#livingWorld[data-scene="tower"] .world-building{height:86%;bottom:10%;width:72%;left:14%;border-radius:90px 90px 0 0;background:linear-gradient(90deg,#51485c,#766b7a,#51485c)}
+#livingWorld[data-scene="academy"] .world-building{background:linear-gradient(90deg,#554f62,#918696,#62586b)}
+#livingWorld[data-scene="underground"] .scene-director span{filter:drop-shadow(0 0 8px #f6c76c)}
+#livingWorld[data-scene="underground"] #worldStage{background:radial-gradient(circle at 50% 25%,#665d67,#302b34 72%)}
+#livingWorld[data-scene="town"] #worldStage{background:linear-gradient(#9ab3cf,#efd0b2 62%,#ac8769)}
+#livingWorld[data-scene="town"] .world-building{width:58%;left:21%;height:43%;bottom:22%;background:linear-gradient(90deg,#8e6258,#d9a882,#7f5960)}
+#livingWorld[data-scene="harbor"] #worldStage{background:linear-gradient(#7aa9ca,#e7c5a5 55%,#5287a0 56%,#2e687f)}
+#livingWorld[data-scene="nature"] .world-building{opacity:.07}
+#livingWorld[data-scene="nature"] #worldStage{background:linear-gradient(#91bad7,#d8d09c 58%,#4e805e)}
+#livingWorld[data-scene="festival"] #worldStage{background:linear-gradient(#8cb9dc,#f1c7ac 62%,#6d9462)}
+#livingWorld[data-scene="village"] #worldStage{background:linear-gradient(#96bdda,#eed3af 62%,#86a36b)}
+#livingWorld[data-scene="realm"] #worldStage{background:linear-gradient(#7e8fc0,#d7aebc 60%,#705f76)}
+@media(max-width:650px){.scene-director span{font-size:clamp(24px,8vw,42px)}#livingWorld[data-scene="ballroom"] #worldStage:after{font-size:2rem}}
+@media(prefers-reduced-motion:reduce){.scene-director span{animation:none!important}}
