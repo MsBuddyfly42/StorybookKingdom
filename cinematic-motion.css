@@ -13,3 +13,26 @@
 .travel-curtain-inner{display:grid;place-items:center;gap:7px;color:#fff0c8;text-align:center}.travel-curtain-inner span{font-size:2.4rem;filter:drop-shadow(0 0 13px #ffe293);animation:travelStar 1s ease-in-out infinite alternate}.travel-curtain-inner strong{font-size:clamp(.85rem,2vw,1.12rem);letter-spacing:.04em}
 @keyframes travelStar{to{transform:rotate(30deg) scale(1.15);filter:drop-shadow(0 0 24px #fff0aa)}}
 @media(prefers-reduced-motion:reduce){#worldStage.camera-depart>*:not(.travel-curtain),#worldStage.camera-arrive>*:not(.travel-curtain),.travel-curtain-inner span,.play-portal.opening .play-door{animation:none!important;transition:none!important;transform:none!important;filter:none!important}}
+
+#worldActor.crossing-threshold{
+  z-index:120!important;
+  animation:crossThreshold .62s cubic-bezier(.35,.05,.72,.92) forwards!important;
+  pointer-events:none!important;
+}
+@keyframes crossThreshold{
+  0%{translate:0 0;opacity:1}
+  65%{translate:calc(var(--cross-x,0px) * .72) calc(var(--cross-y,0px) * .72);opacity:.86;scale:calc(var(--depth-scale,1) * .88)}
+  100%{translate:var(--cross-x,0px) var(--cross-y,0px);opacity:.08;scale:calc(var(--depth-scale,1) * .72)}
+}
+#worldActor.emerging-room{
+  animation:emergeRoom .78s cubic-bezier(.16,.78,.25,1) both!important;
+  z-index:120!important;
+}
+@keyframes emergeRoom{
+  from{translate:var(--enter-x,0px) var(--enter-y,20px);opacity:.08;scale:calc(var(--depth-scale,1) * .78)}
+  45%{opacity:.82}
+  to{translate:0 0;opacity:1;scale:var(--depth-scale,1)}
+}
+@media(prefers-reduced-motion:reduce){
+ #worldActor.crossing-threshold,#worldActor.emerging-room{animation:none!important;opacity:1!important;translate:0 0!important}
+}

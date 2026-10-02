@@ -218,8 +218,10 @@ function buildPortals(){
     layer.appendChild(door);
     game.portals.push({type:'portal',el:door,label,action:()=>{
       game.pendingSpawn=x<25?{x:88,y:76}:x>75?{x:12,y:76}:y<40?{x:50,y:82}:{x:50,y:30};
-      document.dispatchEvent(new CustomEvent('storybook:before-travel',{detail:{label,from:$('#worldTitle')?.textContent||''}}));
-      setTimeout(()=>road.click(),560);
+      game.active=false;game.keys.clear();game.path=[];game.moveTarget=null;player()?.classList.remove('route-walk');
+      const portalType=['door-left','door-right','door-back','door-front','route-gate','route-path'].find(c=>door.classList.contains(c))||'route-path';
+      document.dispatchEvent(new CustomEvent('storybook:before-travel',{detail:{label,from:$('#worldTitle')?.textContent||'',portalType}}));
+      setTimeout(()=>road.click(),620);
     }});
   });
   updateNear();

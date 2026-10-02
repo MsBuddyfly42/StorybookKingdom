@@ -2,7 +2,7 @@
 (()=>{'use strict';
 const $=(s,r=document)=>r.querySelector(s);
 let overlayTimer=0,arriveTimer=0;
-function stage(){return $('#worldStage')}
+function stage(){return $('#worldStage')} function actor(){return $('#worldActor')}
 function ensure(){
  const st=stage();if(!st)return null;
  let o=$('#travelCurtain',st);
@@ -10,20 +10,40 @@ function ensure(){
  return o
 }
 function depart(detail){
- const st=stage(),o=ensure();if(!st||!o)return;
- const portal=$('.play-portal.play-near',st);
- if(portal){portal.classList.add('opening');setTimeout(()=>portal.classList.remove('opening'),900)}
+ const st=stage(),o=ensure(),a=actor();if(!st||!o)return;
+ const portal=$('.play-portal.play-near',st)||$('.play-portal.approach-arrived',st);
+ if(portal){
+  portal.classList.add('opening');
+  const sr=st.getBoundingClientRect(),pr=portal.getBoundingClientRect(),ar=a?.getBoundingClientRect();
+  if(a&&ar){
+   const dx=(pr.left+pr.width/2)-(ar.left+ar.width/2);
+   const dy=(pr.top+pr.height/2)-(ar.top+ar.height/2);
+   a.style.setProperty('--cross-x',Math.max(-90,Math.min(90,dx))+'px');
+   a.style.setProperty('--cross-y',Math.max(-70,Math.min(70,dy))+'px');
+   a.classList.remove('emerging-room');a.classList.add('crossing-threshold');
+  }
+  setTimeout(()=>portal.classList.remove('opening'),1000)
+ }
  $('#travelCurtainText').textContent='Entering '+String(detail?.label||'the next place').replace(/^.*?(?=[A-Za-z])/,'');
  st.classList.remove('camera-arrive');st.classList.add('camera-depart');
- clearTimeout(overlayTimer);overlayTimer=setTimeout(()=>o.classList.add('show'),180)
+ clearTimeout(overlayTimer);overlayTimer=setTimeout(()=>o.classList.add('show'),310)
 }
 function arrive(detail){
- const st=stage(),o=ensure();if(!st||!o)return;
+ const st=stage(),o=ensure(),a=actor();if(!st||!o)return;
  st.classList.remove('camera-depart');st.classList.add('camera-arrive');
  const name=String(detail?.name||'').replace(/^[^A-Za-z]+/,'').trim();
  $('#travelCurtainText').textContent=name?'Arriving at '+name:'You arrive';
  o.classList.add('show');
- clearTimeout(arriveTimer);arriveTimer=setTimeout(()=>{o.classList.remove('show');setTimeout(()=>st.classList.remove('camera-arrive'),650)},300)
+ if(a){
+  a.classList.remove('crossing-threshold');
+  const x=parseFloat(a.style.left)||50,y=parseFloat(a.style.top)||78;
+  let ex=0,ey=18;
+  if(x<22){ex=-34;ey=0}else if(x>78){ex=34;ey=0}else if(y<45){ey=-30}else{ey=30}
+  a.style.setProperty('--enter-x',ex+'px');a.style.setProperty('--enter-y',ey+'px');
+  a.classList.add('emerging-room');
+  setTimeout(()=>a.classList.remove('emerging-room'),900)
+ }
+ clearTimeout(arriveTimer);arriveTimer=setTimeout(()=>{o.classList.remove('show');setTimeout(()=>st.classList.remove('camera-arrive'),650)},320)
 }
 function mount(){
  if(!stage())return false;
