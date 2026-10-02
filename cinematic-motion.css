@@ -1,0 +1,15 @@
+/* Cinematic movement between connected locations */
+#worldStage{perspective:1100px}
+.play-portal{transform-style:preserve-3d;transition:transform .28s ease,box-shadow .28s ease,filter .28s ease}
+.play-portal .play-door{display:inline-block;transform-origin:left center;transition:transform .48s cubic-bezier(.2,.75,.2,1),filter .3s}
+.play-portal.opening{z-index:85;box-shadow:0 0 44px #ffe49d,0 0 0 7px #fff1b42e!important}
+.play-portal.opening .play-door{transform:perspective(250px) rotateY(-72deg) scale(1.18);filter:brightness(1.35)}
+#worldStage.camera-depart>*:not(.travel-curtain){animation:cameraDepart .58s cubic-bezier(.4,0,.8,.2) both}
+#worldStage.camera-arrive>*:not(.travel-curtain){animation:cameraArrive .7s cubic-bezier(.16,.75,.28,1) both}
+@keyframes cameraDepart{to{transform:scale(1.11);filter:blur(3px) brightness(.62);opacity:.48}}
+@keyframes cameraArrive{from{transform:scale(1.08);filter:blur(4px) brightness(1.35);opacity:.42}to{transform:none;filter:none;opacity:1}}
+.travel-curtain{position:absolute;inset:0;z-index:190;display:grid;place-items:center;background:radial-gradient(circle at 50% 46%,#6d5874 0,#2a2035 50%,#110d18 100%);opacity:0;pointer-events:none;transition:opacity .3s ease}
+.travel-curtain.show{opacity:1}
+.travel-curtain-inner{display:grid;place-items:center;gap:7px;color:#fff0c8;text-align:center}.travel-curtain-inner span{font-size:2.4rem;filter:drop-shadow(0 0 13px #ffe293);animation:travelStar 1s ease-in-out infinite alternate}.travel-curtain-inner strong{font-size:clamp(.85rem,2vw,1.12rem);letter-spacing:.04em}
+@keyframes travelStar{to{transform:rotate(30deg) scale(1.15);filter:drop-shadow(0 0 24px #fff0aa)}}
+@media(prefers-reduced-motion:reduce){#worldStage.camera-depart>*:not(.travel-curtain),#worldStage.camera-arrive>*:not(.travel-curtain),.travel-curtain-inner span,.play-portal.opening .play-door{animation:none!important;transition:none!important;transform:none!important;filter:none!important}}
