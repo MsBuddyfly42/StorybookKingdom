@@ -1,0 +1,35 @@
+/* Layered 2D human character models */
+#worldActor.humanized,.world-npc.humanized{font-size:0}
+#worldActor.humanized>small,.world-npc.humanized>small{font-size:.68rem}
+.human-model{--skin:#a96f52;--hair:#32211b;--cloth:#694c78;--accent:#d9b86c;position:relative;display:block;width:58px;height:92px;font-size:16px;filter:drop-shadow(0 6px 4px #0005);transform-origin:50% 100%}
+.human-model i{position:absolute;display:block}
+.human-shadow{left:10px;right:10px;bottom:1px;height:8px;border-radius:50%;background:#0004;filter:blur(3px)}
+.human-body{left:18px;top:40px;width:22px;height:32px;border-radius:10px 10px 7px 7px;background:linear-gradient(90deg,var(--cloth),color-mix(in srgb,var(--cloth),white 15%),var(--cloth));z-index:4}
+.human-f .human-body{left:14px;width:30px;height:34px;clip-path:polygon(25% 0,75% 0,100% 100%,0 100%)}
+.human-belt{left:17px;top:56px;width:24px;height:4px;border-radius:4px;background:var(--accent);z-index:7}.human-f .human-belt{left:15px;width:28px}
+.human-neck{left:25px;top:32px;width:8px;height:12px;background:var(--skin);border-radius:0 0 5px 5px;z-index:3}
+.human-head{left:19px;top:11px;width:20px;height:25px;border-radius:48% 48% 45% 45%;background:var(--skin);z-index:6;box-shadow:inset -2px -3px #0000000d}
+.human-hair{left:17px;top:7px;width:24px;height:16px;border-radius:55% 55% 28% 28%;background:var(--hair);z-index:7}.human-f .human-hair:after{content:"";position:absolute;right:1px;top:8px;width:6px;height:23px;border-radius:0 0 8px 8px;background:var(--hair)}
+.human-eye{top:21px;width:2px;height:2px;border-radius:50%;background:#25191a;z-index:9}.human-eye.eye-l{left:24px}.human-eye.eye-r{left:32px}
+.human-mouth{left:27px;top:28px;width:5px;height:2px;border-bottom:1px solid #733d3d;border-radius:50%;z-index:9}
+.human-arm{top:42px;width:7px;height:29px;border-radius:6px;background:linear-gradient(var(--cloth) 0 56%,var(--skin) 56%);z-index:3;transform-origin:50% 4px}.human-arm.arm-l{left:12px;rotate:8deg}.human-arm.arm-r{right:12px;rotate:-8deg}.human-f .human-arm.arm-l{left:9px}.human-f .human-arm.arm-r{right:9px}
+.human-leg{top:70px;width:8px;height:19px;border-radius:0 0 5px 5px;background:#39323e;z-index:2}.human-leg.leg-l{left:19px}.human-leg.leg-r{right:19px}.human-f .human-leg{opacity:.68}
+.human-player{width:64px;height:100px;scale:1.08}
+#worldActor.humanized{width:66px;height:100px}
+.world-npc.humanized{width:60px;height:98px}
+#worldActor.humanized>small,.world-npc.humanized>small{position:absolute;left:50%;bottom:-5px;transform:translateX(-50%);z-index:20}
+#worldActor.humanized.route-walk .human-model .leg-l,#worldActor.humanized.is-moving .human-model .leg-l,.world-npc.npc-room-walk .human-model .leg-l{animation:legWalkL .34s ease-in-out infinite alternate}
+#worldActor.humanized.route-walk .human-model .leg-r,#worldActor.humanized.is-moving .human-model .leg-r,.world-npc.npc-room-walk .human-model .leg-r{animation:legWalkR .34s ease-in-out infinite alternate}
+#worldActor.humanized.route-walk .human-model .arm-l,#worldActor.humanized.is-moving .human-model .arm-l,.world-npc.npc-room-walk .human-model .arm-l{animation:armWalkL .34s ease-in-out infinite alternate}
+#worldActor.humanized.route-walk .human-model .arm-r,#worldActor.humanized.is-moving .human-model .arm-r,.world-npc.npc-room-walk .human-model .arm-r{animation:armWalkR .34s ease-in-out infinite alternate}
+@keyframes legWalkL{to{rotate:-18deg;translate:1px 0}}@keyframes legWalkR{to{rotate:18deg;translate:-1px 0}}@keyframes armWalkL{to{rotate:-18deg}}@keyframes armWalkR{to{rotate:18deg}}
+.world-npc.npc-speaking .human-mouth,.world-npc.ambient-chat .human-mouth{height:3px;border:0;background:#733d3d;animation:mouthMove .28s steps(2) infinite}@keyframes mouthMove{50%{scale:1 .45}}
+.world-npc.npc-wave .human-arm.arm-r,#worldActor.actor-wave .human-arm.arm-r{rotate:-120deg;animation:humanWave .5s ease-in-out infinite alternate}@keyframes humanWave{to{rotate:-95deg}}
+.world-npc.npc-point .human-arm.arm-r,#worldActor.actor-point .human-arm.arm-r{rotate:-78deg}
+.world-npc.npc-give .human-arm.arm-r,#worldActor.actor-give .human-arm.arm-r{rotate:-68deg}
+.world-npc.npc-react .human-model,#worldActor.actor-react .human-model{animation:humanReact .36s ease-in-out 3}@keyframes humanReact{50%{translate:0 -6px;scale:1.04}}
+#worldActor[data-facing="left"] .human-model,.world-npc[data-facing="left"] .human-model{transform:scaleX(-1)}
+#worldActor[data-facing="left"] .human-model i,.world-npc[data-facing="left"] .human-model i{--unflip:1}
+.equipped-keep{font-size:18px!important;z-index:30}
+@media(max-width:650px){.human-model{scale:.88}.human-player{scale:.94}.world-npc.humanized>small,#worldActor.humanized>small{font-size:.58rem}}
+@media(prefers-reduced-motion:reduce){.human-model i,.human-model{animation:none!important}}
