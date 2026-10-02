@@ -215,3 +215,6 @@
 .world-npc.interaction-triggered{animation:npcInteractionConfirm .48s ease 1!important}
 @keyframes npcInteractionConfirm{45%{filter:brightness(1.18) drop-shadow(0 0 18px #ffdca2);transform:translate(-50%,-8px) scale(1.06)}}
 @media(prefers-reduced-motion:reduce){.interaction-triggered,.world-npc.interaction-triggered{animation:none!important}}
+
+#worldActor.is-moving.route-walk{filter:drop-shadow(0 9px 5px #0008)}
+.approach-target:before{content:"";position:absolute;left:50%;bottom:-10px;transform:translateX(-50%);width:22px;height:7px;border-radius:50%;background:#ffe49b42;filter:blur(3px);pointer-events:none}

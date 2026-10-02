@@ -6,7 +6,7 @@ const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const game={
   mounted:false,active:false,x:50,y:76,facing:'right',
   keys:new Set(),raf:0,last:0,near:null,portals:[],observer:null,
-  speed:24,moveTarget:null,pendingSpawn:null,sceneTimer:0,autoInteractTarget:null
+  speed:24,moveTarget:null,path:[],pendingSpawn:null,sceneTimer:0,autoInteractTarget:null,approachTarget:null
 };
 function root(){return $('#livingWorld')}
 function stage(){return $('#worldStage')}
@@ -17,6 +17,58 @@ function pctPos(el){
   const sr=st.getBoundingClientRect(), r=el.getBoundingClientRect();
   if(!sr.width||!sr.height)return null;
   return {x:((r.left+r.width/2-sr.left)/sr.width)*100,y:((r.top+r.height/2-sr.top)/sr.height)*100};
+}
+function pctRect(el){
+  const st=stage();if(!st||!el)return null;
+  const sr=st.getBoundingClientRect(),r=el.getBoundingClientRect();
+  if(!sr.width||!sr.height)return null;
+  return {l:(r.left-sr.left)/sr.width*100,r:(r.right-sr.left)/sr.width*100,t:(r.top-sr.top)/sr.height*100,b:(r.bottom-sr.top)/sr.height*100}
+}
+function obstacleRects(ignore=null){
+  const st=stage();if(!st)return [];
+  const els=[
+    ...$('.realism-furniture .furniture',st),
+    ...$('.world-npc',st)
+  ].filter(el=>el!==ignore);
+  return els.map(el=>{
+    const r=pctRect(el);if(!r)return null;
+    const pad=el.classList.contains('world-npc')?3.0:el.classList.contains('large')?3.2:2.1;
+    return {l:r.l-pad,r:r.r+pad,t:r.t-pad,b:r.b+pad}
+  }).filter(Boolean)
+}
+function segmentHitsRect(a,b,r){
+  const steps=Math.max(5,Math.ceil(Math.hypot(b.x-a.x,b.y-a.y)/2));
+  for(let i=0;i<=steps;i++){
+    const t=i/steps,x=a.x+(b.x-a.x)*t,y=a.y+(b.y-a.y)*t;
+    if(x>r.l&&x<r.r&&y>r.t&&y<r.b)return true
+  }
+  return false
+}
+function pointClear(p,rects){
+  return p.x>=5&&p.x<=95&&p.y>=18&&p.y<=88&&!rects.some(r=>p.x>r.l&&p.x<r.r&&p.y>r.t&&p.y<r.b)
+}
+function planPath(start,end,ignore=null){
+  const rects=obstacleRects(ignore);
+  let path=[],from={...start},guard=0;
+  while(guard++<6){
+    const hit=rects.find(r=>segmentHitsRect(from,end,r));
+    if(!hit)break;
+    const candidates=[
+      {x:hit.l-4,y:Math.max(20,Math.min(86,from.y))},
+      {x:hit.r+4,y:Math.max(20,Math.min(86,from.y))},
+      {x:Math.max(7,Math.min(93,from.x)),y:hit.t-4},
+      {x:Math.max(7,Math.min(93,from.x)),y:hit.b+4}
+    ].filter(p=>pointClear(p,rects));
+    if(!candidates.length)break;
+    candidates.sort((p,q)=>(Math.hypot(p.x-from.x,p.y-from.y)+Math.hypot(end.x-p.x,end.y-p.y))-(Math.hypot(q.x-from.x,q.y-from.y)+Math.hypot(end.x-q.x,end.y-q.y)));
+    const wp=candidates[0];path.push(wp);from=wp;
+    const idx=rects.indexOf(hit);if(idx>=0)rects.splice(idx,1)
+  }
+  path.push(end);return path
+}
+function beginAutoWalk(target,ignore=null){
+  game.path=planPath({x:game.x,y:game.y},target,ignore);
+  game.moveTarget=game.path.shift()||target;
 }
 function setPlayer(){
   const p=player();if(!p)return;
@@ -75,7 +127,7 @@ function updateNear(){
 }
 function interactTarget(t){
   if(!game.active||!t)return;
-  game.moveTarget=null;game.autoInteractTarget=null;
+  game.moveTarget=null;game.path=[];game.autoInteractTarget=null;
   document.dispatchEvent(new CustomEvent('storybook:interact',{detail:{type:t.type,label:t.label,location:$('#worldTitle')?.textContent||''}}));
   if(t.el){t.el.classList.remove('play-near','approach-target');t.el.classList.add('interaction-triggered');setTimeout(()=>t.el?.classList.remove('interaction-triggered'),700)}
   game.near=null;
@@ -86,9 +138,9 @@ function interact(){
   if(!game.active||!game.near)return;
   interactTarget(game.near);
 }
-function move(dx,dy,dt){
+function move(dx,dy,dt,isAuto=false){
   if(!game.active)return;
-  if(dx||dy){game.moveTarget=null;game.autoInteractTarget=null;if(game.approachTarget){game.approachTarget.classList.remove('approach-target');game.approachTarget=null}}
+  if((dx||dy)&&!isAuto){game.moveTarget=null;game.path=[];game.autoInteractTarget=null;if(game.approachTarget){game.approachTarget.classList.remove('approach-target');game.approachTarget=null}}
   const boost=game.keys.has('shift')?1.65:1;
   const scale=game.speed*boost*dt;
   if(dx){game.x=clamp(game.x+dx*scale,5,95);game.facing=dx<0?'left':'right'}
@@ -99,34 +151,38 @@ function move(dx,dy,dt){
 function frame(ts){
   if(!game.active){game.raf=requestAnimationFrame(frame);return}
   const dt=Math.min(.034,(ts-game.last)/1000||.016);game.last=ts;
-  let dx=0,dy=0;
+  let dx=0,dy=0,isAuto=false;
   if(game.keys.has('arrowleft')||game.keys.has('a'))dx--;
   if(game.keys.has('arrowright')||game.keys.has('d'))dx++;
   if(game.keys.has('arrowup')||game.keys.has('w'))dy--;
   if(game.keys.has('arrowdown')||game.keys.has('s'))dy++;
   if(!dx&&!dy&&game.moveTarget){
+    isAuto=true;
     const tx=game.moveTarget.x-game.x,ty=game.moveTarget.y-game.y,dist=Math.hypot(tx,ty);
     if(dist<1.2){
-      game.moveTarget=null;
-      const arrived=game.approachTarget;
-      if(arrived){
-        arrived.classList.remove('approach-target');arrived.classList.add('approach-arrived');
-        setTimeout(()=>arrived?.classList.remove('approach-arrived'),900);
-        game.approachTarget=null
+      if(game.path.length){
+        game.moveTarget=game.path.shift();isAuto=true;
+      }else{
+        game.moveTarget=null;
+        const arrived=game.approachTarget;
+        if(arrived){
+          arrived.classList.remove('approach-target');arrived.classList.add('approach-arrived');
+          setTimeout(()=>arrived?.classList.remove('approach-arrived'),900);
+          game.approachTarget=null
+        }
+        updateNear();
+        if(arrived&&game.autoInteractTarget===arrived){
+          game.autoInteractTarget=null;
+          setTimeout(()=>{
+            const t=collectTargets().find(x=>x.el===arrived);
+            if(t){game.near=t;interactTarget(t)}
+          },120)
+        }
       }
-      updateNear();
-      if(arrived&&game.autoInteractTarget===arrived){
-        game.autoInteractTarget=null;
-        setTimeout(()=>{
-          const t=collectTargets().find(x=>x.el===arrived);
-          if(t){game.near=t;interactTarget(t)}
-        },120)
-      }
-    }
-    else{dx=tx/dist;dy=ty/dist}
+    }else{dx=tx/dist;dy=ty/dist}
   }
-  if(dx&&dy&&!game.moveTarget){dx*=.707;dy*=.707}
-  move(dx,dy,dt);
+  if(dx&&dy&&!isAuto){dx*=.707;dy*=.707}
+  move(dx,dy,dt,isAuto);
   game.raf=requestAnimationFrame(frame);
 }
 function buildPortals(){
@@ -163,7 +219,7 @@ function sceneChanged(){
   clearTimeout(game.sceneTimer);
   game.sceneTimer=setTimeout(()=>{
     game.active=true;root().classList.add('play-mode');
-    game.autoInteractTarget=null;game.approachTarget=null;resetPlayer();buildPortals();updateNear();showTip();
+    game.autoInteractTarget=null;game.approachTarget=null;game.path=[];resetPlayer();buildPortals();updateNear();showTip();
     document.dispatchEvent(new CustomEvent('storybook:location',{detail:{name:$('#worldTitle')?.textContent||'',zone:root().dataset.zone||''}}));
   },55);
 }
@@ -218,12 +274,12 @@ function mount(){
     const target=e.target.closest('.world-hotspot,.world-npc,.play-portal');
     if(!target)return;
     e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
-    const pos=pctPos(target);if(pos){game.moveTarget=approachPoint(target,pos);game.approachTarget=target;game.autoInteractTarget=target;target.classList.add('approach-target','auto-interact');showTip();const label=$('#playObjective');if(label)label.textContent='Walking to '+(target.querySelector('small')?.textContent||'your destination')+'…'}
+    const pos=pctPos(target);if(pos){const dest=approachPoint(target,pos);beginAutoWalk(dest,target);game.approachTarget=target;game.autoInteractTarget=target;target.classList.add('approach-target','auto-interact');showTip();const label=$('#playObjective');if(label)label.textContent='Walking to '+(target.querySelector('small')?.textContent||'your destination')+'…'}
   },true);
   st.addEventListener('pointerdown',e=>{
     if(!game.active||e.target.closest('button,.world-hotspot,.world-npc,.play-portal'))return;
     const r=st.getBoundingClientRect();
-    game.moveTarget={x:clamp(((e.clientX-r.left)/r.width)*100,5,95),y:clamp(((e.clientY-r.top)/r.height)*100,18,88)};
+    beginAutoWalk({x:clamp(((e.clientX-r.left)/r.width)*100,5,95),y:clamp(((e.clientY-r.top)/r.height)*100,18,88)});
   });
   document.addEventListener('keydown',e=>{
     if(!game.active||isTyping())return;
