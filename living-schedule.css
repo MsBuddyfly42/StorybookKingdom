@@ -1,0 +1,8 @@
+/* Daily life and ambient world-state */
+.world-pulse{display:grid;grid-template-columns:auto auto 1fr;align-items:center;gap:7px 10px;margin:6px 0 9px;padding:7px 10px;border:1px solid #d9bd7a55;border-radius:12px;background:#211929dc;color:#f6e7c8;font-size:.74rem}
+.world-pulse-dot{width:8px;height:8px;border-radius:50%;background:#8ed69f;box-shadow:0 0 10px #9deab0;animation:pulseDot 1.2s ease-in-out infinite alternate}.world-pulse strong{white-space:nowrap;color:#f0d28f}.world-pulse span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@keyframes pulseDot{to{transform:scale(1.35);box-shadow:0 0 16px #b7ffc7}}
+.world-ambient-speech{position:absolute;z-index:58;left:50%;top:14%;transform:translate(-50%,-8px);max-width:min(78%,560px);padding:8px 12px;border:1px solid #ecd28f77;border-radius:999px;background:#231a30e8;color:#fff0cb;font-size:.76rem;font-weight:800;text-align:center;opacity:0;pointer-events:none;transition:.22s}.world-ambient-speech.show{opacity:1;transform:translate(-50%,0)}
+.world-npc[data-routine="morning"]{filter:drop-shadow(0 5px 5px #f6d58b44)}.world-npc[data-routine="evening"],.world-npc[data-routine="night"]{filter:drop-shadow(0 5px 7px #e5cbff66)}
+@media(max-width:620px){.world-pulse{grid-template-columns:auto 1fr}.world-pulse strong{white-space:normal}.world-pulse span:last-child{grid-column:1/-1;white-space:normal}.world-ambient-speech{top:11%;max-width:86%;border-radius:13px;font-size:.7rem}}
+@media(prefers-reduced-motion:reduce){.world-pulse-dot,.world-ambient-speech{animation:none!important;transition:none!important}}
