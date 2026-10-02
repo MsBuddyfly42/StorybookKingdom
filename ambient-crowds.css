@@ -1,0 +1,10 @@
+/* Ambient distant scene population */
+.ambient-crowds{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden}
+.ambient-extra{position:absolute;transform:translate(-50%,-50%) scale(var(--extra-scale,.72));transform-origin:50% 100%;font-size:clamp(24px,4vw,44px);opacity:.42;filter:saturate(.72) blur(.15px) drop-shadow(0 5px 4px #0004);animation:ambientExtra 4.2s ease-in-out infinite alternate}
+@keyframes ambientExtra{to{translate:5px -2px;opacity:.56}}
+#livingWorld[data-time="night"] .ambient-extra{opacity:.24;filter:saturate(.45) brightness(.72) drop-shadow(0 4px 4px #0005)}
+#livingWorld[data-scene="ballroom"] .ambient-extra{opacity:.34}
+#livingWorld[data-scene="underground"] .ambient-extra{opacity:.2}
+#livingWorld[data-realism="interior"] .ambient-crowds{clip-path:inset(13% 8% 20% 8%)}
+@media(max-width:650px){.ambient-extra:nth-child(n+5){display:none}.ambient-extra{font-size:clamp(21px,7vw,34px)}}
+@media(prefers-reduced-motion:reduce){.ambient-extra{animation:none!important}}
