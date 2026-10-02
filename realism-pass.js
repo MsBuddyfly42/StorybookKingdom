@@ -45,21 +45,24 @@ function setArchitecture(){
 }
 function stylizePortals(){
  const st=stage();if(!st)return;
- const portals=$$('.play-portal',st);
+ const portals=$('.play-portal',st);
+ const interior=root()?.dataset.realism==='interior'||root()?.dataset.realism==='underground';
+ const indoorSlots=[
+  {x:24,y:49,type:'door-back'},{x:50,y:49,type:'door-back'},{x:76,y:49,type:'door-back'},
+  {x:6,y:61,type:'door-left'},{x:94,y:61,type:'door-right'},
+  {x:6,y:76,type:'door-left'},{x:94,y:76,type:'door-right'},
+  {x:50,y:79,type:'door-front'}
+ ];
+ const outdoorSlots=[
+  {x:50,y:55,type:'route-gate'},{x:12,y:73,type:'route-path'},{x:88,y:73,type:'route-path'},
+  {x:25,y:80,type:'route-path'},{x:75,y:80,type:'route-path'},{x:14,y:47,type:'route-gate'},
+  {x:86,y:47,type:'route-gate'},{x:50,y:82,type:'route-path'}
+ ];
  portals.forEach((p,i)=>{
   p.classList.remove('door-back','door-left','door-right','door-front','route-path','route-gate');
-  const x=parseFloat(p.style.left)||50,y=parseFloat(p.style.top)||50;
-  const interior=root()?.dataset.realism==='interior'||root()?.dataset.realism==='underground';
-  let type;
-  if(interior){
-   if(x<=18)type='door-left';
-   else if(x>=82)type='door-right';
-   else if(y<=35)type='door-back';
-   else type='door-front';
-  }else{
-   if(i<2)type='route-gate'; else type='route-path';
-  }
-  p.classList.add(type);
+  const slot=(interior?indoorSlots:outdoorSlots)[i%8];
+  p.style.left=slot.x+'%';p.style.top=slot.y+'%';p.classList.add(slot.type);
+  p.dataset.archSlot=String(i%8);
   const oldIcon=p.querySelector('.play-door');
   if(oldIcon){
    oldIcon.textContent='';
