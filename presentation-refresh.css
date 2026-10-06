@@ -32,3 +32,7 @@ body { background:radial-gradient(ellipse at top right,#d5e8df,transparent 55%),
 .mode-card p { color:#40564c; }
 .mode-card button { background:#235547; color:#fff; border-radius:10px; }
 @media(max-width:760px) { .topbar { position:relative; flex-wrap:wrap; } .top-actions { flex-wrap:wrap; } .hero { grid-template-columns:1fr; gap:24px; } .hero-buttons>* { flex:1 1 180px; } .mode-grid { grid-template-columns:1fr; } }
+
+.hero .hero-copy { background:transparent; }
+.hero .hero-copy h1 { background:none; color:#153c31; -webkit-text-fill-color:#153c31; }
+.hero .status-ribbon { background:#e4eee7; color:#20352e; }
