@@ -116,13 +116,13 @@ function bind(){
  if(actor)new MutationObserver(()=>{if(actor.classList.contains('is-moving'))footstep()}).observe(actor,{attributes:true,attributeFilter:['class']});
  const r=root();if(r)new MutationObserver(()=>particleLayer()).observe(r,{attributes:true,attributeFilter:['data-weather','data-time','data-zone']});
 }
-function performance(){
+function managePerformance(){
  document.addEventListener('visibilitychange',()=>{hidden=document.hidden;document.documentElement.classList.toggle('game-hidden',hidden);if(ctx){if(hidden&&ctx.state==='running')ctx.suspend();else if(!hidden&&prefs.audio&&ctx.state==='suspended')ctx.resume()}});
  window.addEventListener('pagehide',()=>{clearInterval(ambientTimer);clearInterval(poseTimer)})
 }
 function mount(){
  if(!root()||!stage())return false;
- audioButton();particleLayer();animateNPCs();releaseBadge();bind();performance();
+ audioButton();particleLayer();animateNPCs();releaseBadge();bind();managePerformance();
  clearInterval(ambientTimer);ambientTimer=setInterval(ambientChime,11000);
  clearInterval(poseTimer);poseTimer=setInterval(()=>{if(!document.hidden&&!root().hidden)animateNPCs()},4300);
  return true
