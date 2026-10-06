@@ -32,20 +32,24 @@ function ensureArchitecture(){
 function setArchitecture(){
  const r=root(),st=stage(),arch=ensureArchitecture();if(!r||!st||!arch)return;
  const sc=scene(),place=clean($('#worldTitle')?.textContent);
- r.dataset.realism=interiorScenes.has(sc)?'interior':sc==='underground'?'underground':'outdoor';
+ const realism=interiorScenes.has(sc)?'interior':sc==='underground'?'underground':'outdoor';
+ if(r.dataset.realism!==realism)r.dataset.realism=realism;
  arch.dataset.theme=sc;
  arch.className='realism-architecture theme-'+sc;
  const decor=arch.querySelector('.realism-wall-decor');
  const icons=wallDecor[sc]||wallDecor.hall;
- decor.innerHTML=icons.map((x,i)=>'<span style="left:'+(10+i*20)+'%">'+x+'</span>').join('');
- const sign=arch.querySelector('.realism-facade-sign');if(sign)sign.textContent=place;
+ if(decor.dataset.scene!==sc){
+  decor.innerHTML=icons.map((x,i)=>'<span style="left:'+(10+i*20)+'%">'+x+'</span>').join('');
+  decor.dataset.scene=sc;
+ }
+ const sign=arch.querySelector('.realism-facade-sign');if(sign&&sign.textContent!==place)sign.textContent=place;
  positionNPCs();
  stylizePortals();
  subtleHotspots();
 }
 function stylizePortals(){
  const st=stage();if(!st)return;
- const portals=$('.play-portal',st);
+ const portals=$$('.play-portal',st);
  const interior=root()?.dataset.realism==='interior'||root()?.dataset.realism==='underground';
  const indoorSlots=[
   {x:24,y:49,type:'door-back'},{x:50,y:49,type:'door-back'},{x:76,y:49,type:'door-back'},
@@ -64,7 +68,7 @@ function stylizePortals(){
   p.style.left=slot.x+'%';p.style.top=slot.y+'%';p.classList.add(slot.type);
   p.dataset.archSlot=String(i%8);
   const oldIcon=p.querySelector('.play-door');
-  if(oldIcon){
+  if(oldIcon&&!oldIcon.querySelector('.door-panel')){
    oldIcon.textContent='';
    oldIcon.innerHTML='<i class="door-panel a"></i><i class="door-panel b"></i><i class="door-knob"></i>';
   }
