@@ -266,7 +266,7 @@ function addHud(){
   $$('.play-controls button',st).forEach(btn=>{
     const map={up:'arrowup',down:'arrowdown',left:'arrowleft',right:'arrowright'};
     const key=map[btn.dataset.dir];
-    const down=e=>{e.preventDefault();game.keys.add(key);btn.setPointerCapture?.(e.pointerId)};
+    const down=e=>{e.preventDefault();move(btn.dataset.dir==='left'?-1:btn.dataset.dir==='right'?1:0,btn.dataset.dir==='up'?-1:btn.dataset.dir==='down'?1:0,.07);game.keys.add(key);btn.setPointerCapture?.(e.pointerId)};
     const up=e=>{e.preventDefault();game.keys.delete(key)};
     btn.addEventListener('pointerdown',down);btn.addEventListener('pointerup',up);btn.addEventListener('pointercancel',up);btn.addEventListener('lostpointercapture',up);
   });
@@ -287,7 +287,7 @@ function mount(){
   game.observer=new MutationObserver(muts=>{
     let changed=false;
     for(const m of muts){
-      if(m.target.id==='worldTitle'||m.target.id==='worldRoads'||m.target.id==='worldObjects'||m.target.id==='worldActors'||m.target.closest?.('#worldRoads,#worldObjects,#worldActors')){changed=true;break}
+      if(m.target.id==='worldTitle'||m.target.id==='worldRoads'){changed=true;break}
     }
     if(changed)setTimeout(sceneChanged,0);
   });
@@ -324,3 +324,4 @@ function wait(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wait);else wait();
 })();
+
