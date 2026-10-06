@@ -34,7 +34,7 @@ function furnitureRects(){
  }).filter(Boolean)
 }
 function npcRects(){
- return $('.world-npc',stage()||document).map(el=>{const r=pctRect(el);return r?{...r,el}:null}).filter(Boolean)
+ return $$('.world-npc',stage()||document).map(el=>{const r=pctRect(el);return r?{...r,el}:null}).filter(Boolean)
 }
 function portalRects(){
  return $$('.play-portal',stage()||document).map(el=>{const r=pctRect(el);return r?{...r,el}:null}).filter(Boolean)
