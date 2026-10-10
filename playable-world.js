@@ -27,8 +27,8 @@ function pctRect(el){
 function obstacleRects(ignore=null){
   const st=stage();if(!st)return [];
   const els=[
-    ...$('.realism-furniture .furniture',st),
-    ...$('.world-npc',st)
+    ...$$('.realism-furniture .furniture',st),
+    ...$$('.world-npc',st)
   ].filter(el=>el!==ignore);
   return els.map(el=>{
     const r=pctRect(el);if(!r)return null;
@@ -324,4 +324,5 @@ function wait(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wait);else wait();
 })();
+
 
