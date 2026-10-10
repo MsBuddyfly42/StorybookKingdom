@@ -3,6 +3,7 @@
 const $=s=>document.querySelector(s);
 const clean=s=>(s||'').replace(/^[^a-zA-Z]+/,'').trim();
 const themes=[
+ {re:/courtyard/i,key:'nature',props:['🏰','🌳','⛲','🌳','🏳️']},
  {re:/throne room|royal court chamber/i,key:'throne',props:['👑','⚜️','🪑','🏳️','🕯️']},
  {re:/library|archive|crooked bookmark/i,key:'library',props:['📚','📖','🪜','🕯️','🗺️']},
  {re:/kitchen|pantry|bakery|honey/i,key:'kitchen',props:['🔥','🥖','🥧','🍯','🫖']},
