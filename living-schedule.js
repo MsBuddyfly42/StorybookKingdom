@@ -103,7 +103,7 @@ function routine(){
  const npcs=$$('.world-npc');
  npcs.forEach((n,i)=>{
   n.dataset.routine=t;
-  const icon=n.querySelector('span');
+  const icon=n.querySelector('span:not(.human-model)');
   if(!icon)return;
   const z=zone();
   const sets={
