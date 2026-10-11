@@ -96,7 +96,7 @@ function render(){
  else if(count<3){caption.textContent=(r.carrying===null?j.task:'You are carrying '+j.verb+' '+(r.carrying+1)+'. Choose a destination.')+' '+count+'/3 placed.';}
  else{caption.textContent='All three '+(t==='morning'?'parcels are delivered':t==='afternoon'?'flower baskets are planted':t==='evening'?'lanterns are lit':'storybooks are ready')+'. '+(r.choice?'Your festival choice is saved.':'Where would you like the next gathering?');if(!r.choice){controls.append(makeButton('Plan a village picnic',()=>choose('village')),makeButton('Plan a castle reception',()=>choose('castle')));}}
  for(let i=0;i<3;i++){
- const destination=makeButton((r.placed[i]?j.icon+' ✓ ':'')+j.targets[i],()=>deliver(i),!r.joined||r.carrying===null||r.placed[i]);destination.className='nl-destination';destination.dataset.slot=String(i);scene.querySelector('.nl-targets').append(destination);
+ const destination=makeButton((r.placed[i]?j.icon+' ✓ ':'')+j.targets[i],()=>deliver(i),!r.joined||r.carrying===null||r.placed[i]);destination.className='nl-destination';destination.dataset.slot=String(i);destination.dataset.placed=String(r.placed[i]);scene.querySelector('.nl-targets').append(destination);
  const item=makeButton('Pick up '+j.verb+' '+(i+1),()=>{if(busy||r.carrying!==null||r.used[i])return;r.carrying=i;save();render()},!r.joined||r.carrying!==null||r.used[i]);item.className='nl-item';item.textContent=r.used[i]?'✓':j.icon+' '+(i+1);item.setAttribute('aria-label','Pick up '+j.verb+' '+(i+1));scene.querySelector('.nl-items').append(item)
  }
  controls.append(makeButton('Keep wandering',()=>{panel.remove();panel=null}));
